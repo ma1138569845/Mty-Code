@@ -11,6 +11,10 @@ import { MCP } from "../mcp"
 import { Skill } from "../skill"
 import PROMPT_INITIALIZE from "./template/initialize.txt"
 import PROMPT_REVIEW from "./template/review.txt"
+import PROMPT_MTY_BACKEND from "./template/mty-backend.txt"
+import PROMPT_MTY_FRONTEND_DESIGN from "./template/mty-frontend-design.txt"
+import PROMPT_MTY_FRONTEND from "./template/mty-frontend.txt"
+import PROMPT_MTY_TEAM from "./template/mty-team.txt"
 
 type State = {
   commands: Record<string, Info>
@@ -65,6 +69,10 @@ export const Default = {
   DISTILL: "distill",
   GOAL: "goal",
   DEEP_RESEARCH: "deep-research",
+  MTY_BACKEND: "mty-backend",
+  MTY_FRONTEND_DESIGN: "mty-frontend-design",
+  MTY_FRONTEND: "mty-frontend",
+  MTY_TEAM: "mty-team",
 } as const
 
 export function deepResearchTemplate(): string {
@@ -187,6 +195,47 @@ export const layer = Layer.effect(
           },
           hints: ["$ARGUMENTS"],
         }
+      }
+
+      commands[Default.MTY_BACKEND] = {
+        name: Default.MTY_BACKEND,
+        description: "后端开发全流程：研究→构思→计划→TDD执行→优化→评审",
+        source: "command",
+        subtask: false,
+        get template() {
+          return PROMPT_MTY_BACKEND
+        },
+        hints: ["$ARGUMENTS"],
+      }
+      commands[Default.MTY_FRONTEND_DESIGN] = {
+        name: Default.MTY_FRONTEND_DESIGN,
+        description: "页面/UI设计全流程：研究→构思→组件计划→实现→打磨→评审",
+        source: "command",
+        subtask: false,
+        get template() {
+          return PROMPT_MTY_FRONTEND_DESIGN
+        },
+        hints: ["$ARGUMENTS"],
+      }
+      commands[Default.MTY_FRONTEND] = {
+        name: Default.MTY_FRONTEND,
+        description: "前端开发全流程：研究→构思→计划→执行→优化→评审",
+        source: "command",
+        subtask: false,
+        get template() {
+          return PROMPT_MTY_FRONTEND
+        },
+        hints: ["$ARGUMENTS"],
+      }
+      commands[Default.MTY_TEAM] = {
+        name: Default.MTY_TEAM,
+        description: "8阶段企业级工作流：需求澄清→风险分级→Spec→计划→TDD执行→代码审查→质量验证→交付总结",
+        source: "command",
+        subtask: false,
+        get template() {
+          return PROMPT_MTY_TEAM
+        },
+        hints: ["$ARGUMENTS"],
       }
 
       for (const [name, command] of Object.entries(cfg.command ?? {})) {
