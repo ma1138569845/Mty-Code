@@ -5,8 +5,9 @@ const fs = require("fs")
 const path = require("path")
 const os = require("os")
 
-function run(target) {
-  const result = childProcess.spawnSync(target, process.argv.slice(2), {
+function run(target, extraArgs) {
+  const args = extraArgs ? [...extraArgs, ...process.argv.slice(2)] : process.argv.slice(2)
+  const result = childProcess.spawnSync(target, args, {
     stdio: "inherit",
   })
   if (result.error) {
@@ -169,12 +170,31 @@ function findBinary(startDir) {
 
 const resolved = findBinary(scriptDir)
 if (!resolved) {
-  console.error(
-    "It seems that your package manager failed to install the right version of the mtycoder CLI for your platform. You can try manually installing " +
-      names.map((n) => `\"${n}\"`).join(" or ") +
-      " package",
-  )
-  process.exit(1)
-}
+  // Fallback: run via bun from the package root
+  const pkgRoot = path.resolve(scriptDir, "..")
+  const entryPoint = path.join(pkgRoot, "src", "index.ts")
 
-run(resolved)
+  if (fs.existsSync(entryPoint)) {
+    const bun = process.env.BUN_PATH || "bun"
+    // Check if bun is available
+    const check = childProcess.spawnSync(bun, ["--version"], {
+      encoding: "utf8",
+      timeout: 3000,
+      stdio: "pipe",
+    })
+    if (check.error || check.status !== 0) {
+      console.error("Error: bun is required to run mty. Install it from https://bun.sh")
+      process.exit(1)
+    }
+    run(bun, ["run", "--conditions=browser", entryPoint])
+  } else {
+    console.error(
+      "It seems that your package manager failed to install the right version of the mtycoder CLI for your platform. You can try manually installing " +
+        names.map((n) => `\"${n}\"`).join(" or ") +
+        " package",
+    )
+    process.exit(1)
+  }
+} else {
+  run(resolved)
+}
