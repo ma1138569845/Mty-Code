@@ -29,11 +29,23 @@ MtyCoder Auto is built in as a free-for-limited-time channel, so you can start w
 curl -fsSL https://mtycoder.example.com/install | bash
 
 # Or install via npm
-npm install -g @mty-coder/cli
+npm install -g @mty-coder/cli --legacy-peer-deps
 
 # Run
 mty
 ```
+
+<details>
+<summary><strong>Why <code>--legacy-peer-deps</code>?</strong></summary>
+
+Some upstream dependencies have conflicting peer dependency requirements (e.g. `effect` v3 vs v4, `zod` v3 vs v4). These are warnings only — installation still succeeds. Use `--legacy-peer-deps` to suppress them:
+
+```bash
+npm install -g @mty-coder/cli --legacy-peer-deps
+```
+
+This flag tells npm to skip peer dependency validation, which is safe since the conflicting versions are compatible at runtime.
+</details>
 
 <details>
 <summary><strong>Windows: npm install fails with <code>node-gyp</code> / Visual Studio error</strong></summary>
