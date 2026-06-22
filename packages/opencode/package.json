@@ -21,7 +21,7 @@
     "db": "bun drizzle-kit"
   },
   "bin": {
-    "mty": "./bin/mty"
+    "mty": "./bin/mty.cjs"
   },
   "exports": {
     "./*": "./src/*.ts"
