@@ -35,6 +35,23 @@ npm install -g @mty-coder/cli
 mty
 ```
 
+<details>
+<summary><strong>Windows：npm 安装报错 <code>node-gyp</code> / Visual Studio</strong></summary>
+
+部分原生依赖（如 `tree-sitter`）在 Windows 上需要编译工具。
+
+**方案一 — 安装 windows-build-tools（推荐）**
+```bash
+npm install -g windows-build-tools
+```
+
+**方案二 — 安装 Visual Studio Build Tools**
+1. 下载 https://visualstudio.microsoft.com/visual-cpp-build-tools/
+2. 安装 **"使用 C++ 的桌面开发"** 工作负载
+3. 重新运行 `npm install -g @mty-coder/cli`
+
+</details>
+
 首次启动自动引导配置。支持：
 - **从 Claude Code 导入** — 一键迁移已有认证
 - **自定义 Provider** — TUI 内添加任意 OpenAI 兼容 API

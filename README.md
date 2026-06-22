@@ -35,6 +35,23 @@ npm install -g @mty-coder/cli
 mty
 ```
 
+<details>
+<summary><strong>Windows: npm install fails with <code>node-gyp</code> / Visual Studio error</strong></summary>
+
+Some native dependencies (e.g. `tree-sitter`) require compilation tools on Windows.
+
+**Option 1 — Install windows-build-tools (recommended)**
+```bash
+npm install -g windows-build-tools
+```
+
+**Option 2 — Install Visual Studio Build Tools**
+1. Download from https://visualstudio.microsoft.com/visual-cpp-build-tools/
+2. Install **"Desktop development with C++"** workload
+3. Re-run `npm install -g @mty-coder/cli`
+
+</details>
+
 The first launch guides you through configuration automatically. Supported options:
 - **MtyCoder Auto (free for a limited time)** — anonymous channel, zero configuration
 - **MtyCoder Platform** — OAuth login
