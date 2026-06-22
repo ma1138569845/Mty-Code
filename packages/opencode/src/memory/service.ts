@@ -4,7 +4,7 @@ import os from "os"
 import { Global } from "../global"
 import { Database } from "../storage"
 import { Config } from "../config"
-import { reconcileMemory } from "./reconcile"
+import { reconcileMemory, startWatching, stopWatching } from "./reconcile"
 import { buildFtsQuery } from "./fts-query"
 
 type SearchRow = {
@@ -39,6 +39,11 @@ export const layer: Layer.Layer<Service, never, Config.Service> = Layer.effect(
     const root = path.join(Global.Path.data, "memory")
     const ccBase = path.join(os.homedir(), ".claude", "projects")
 
+    // Start incremental watcher for memory directory changes
+    const cfg = yield* config.get()
+    const cc = cfg.memory?.cc_index ? ccBase : undefined
+    startWatching({ mty: root, cc })
+
     const rootEff = Effect.fn("Memory.root")(function* () {
       return root
     })
@@ -46,7 +51,7 @@ export const layer: Layer.Layer<Service, never, Config.Service> = Layer.effect(
     const reconcile = Effect.fn("Memory.reconcile")(function* () {
       const cfg = yield* config.get()
       const cc = cfg.memory?.cc_index ? ccBase : undefined
-      return yield* Effect.promise(() => reconcileMemory({ mimo: root, cc }))
+      return yield* Effect.promise(() => reconcileMemory({ mty: root, cc }))
     })
 
     const search = Effect.fn("Memory.search")(function* (input: {
@@ -60,7 +65,7 @@ export const layer: Layer.Layer<Service, never, Config.Service> = Layer.effect(
       const cfg = yield* config.get()
       if (cfg.checkpoint?.memory_reconcile_on_search ?? true) {
         const cc = cfg.memory?.cc_index ? ccBase : undefined
-        yield* Effect.promise(() => reconcileMemory({ mimo: root, cc }))
+        yield* Effect.promise(() => reconcileMemory({ mty: root, cc }))
       }
 
       const limit = input.limit ?? 10
@@ -132,6 +137,9 @@ export const layer: Layer.Layer<Service, never, Config.Service> = Layer.effect(
       const cutoff = floorRatio > 0 ? topScore * floorRatio : -Infinity
       return mapped.filter((r, i) => i === 0 || r.score >= cutoff).slice(0, limit)
     })
+
+    // Cleanup watcher when service is destroyed
+    yield* Effect.addFinalizer(() => Effect.sync(() => stopWatching()))
 
     return Service.of({
       root: rootEff,

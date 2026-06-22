@@ -161,7 +161,7 @@ async function initialize() {
       const { Database, JsonMigration } = await import("virtual:opencode-server")
       await JsonMigration.run(drizzle({ client: Database.Client().$client }), {
         progress: (event: { current: number; total: number }) => {
-          const percent = Math.round(event.current / event.total) * 100
+          const percent = Math.round((event.current / event.total) * 100)
           initEmitter.emit("sqlite", { type: "InProgress", value: percent })
         },
       })

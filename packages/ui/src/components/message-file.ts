@@ -1,4 +1,4 @@
-import type { FilePart } from "@mimo-ai/sdk/v2"
+import type { FilePart } from "@mty-coder/sdk/v2"
 
 export function attached(part: FilePart) {
   return part.url.startsWith("data:")

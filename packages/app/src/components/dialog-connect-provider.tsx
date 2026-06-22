@@ -1,14 +1,14 @@
-import type { ProviderAuthAuthorization, ProviderAuthMethod } from "@mimo-ai/sdk/v2/client"
-import { Button } from "@mimo-ai/ui/button"
-import { useDialog } from "@mimo-ai/ui/context/dialog"
-import { Dialog } from "@mimo-ai/ui/dialog"
-import { Icon } from "@mimo-ai/ui/icon"
-import { IconButton } from "@mimo-ai/ui/icon-button"
-import { List, type ListRef } from "@mimo-ai/ui/list"
-import { ProviderIcon } from "@mimo-ai/ui/provider-icon"
-import { Spinner } from "@mimo-ai/ui/spinner"
-import { TextField } from "@mimo-ai/ui/text-field"
-import { showToast } from "@mimo-ai/ui/toast"
+import type { ProviderAuthAuthorization, ProviderAuthMethod } from "@mty-coder/sdk/v2/client"
+import { Button } from "@mty-coder/ui/button"
+import { useDialog } from "@mty-coder/ui/context/dialog"
+import { Dialog } from "@mty-coder/ui/dialog"
+import { Icon } from "@mty-coder/ui/icon"
+import { IconButton } from "@mty-coder/ui/icon-button"
+import { List, type ListRef } from "@mty-coder/ui/list"
+import { ProviderIcon } from "@mty-coder/ui/provider-icon"
+import { Spinner } from "@mty-coder/ui/spinner"
+import { TextField } from "@mty-coder/ui/text-field"
+import { showToast } from "@mty-coder/ui/toast"
 import { createEffect, createMemo, createResource, Match, onCleanup, onMount, Switch } from "solid-js"
 import { createStore, produce } from "solid-js/store"
 import { Link } from "@/components/link"
@@ -422,16 +422,16 @@ export function DialogConnectProvider(props: { provider: string }) {
     return (
       <div class="flex flex-col gap-6">
         <Switch>
-          <Match when={provider().id === "opencode"}>
+          <Match when={provider().id === "mtycoder"}>
             <div class="flex flex-col gap-4">
-              <div class="text-14-regular text-text-base">{language.t("provider.connect.opencodeZen.line1")}</div>
-              <div class="text-14-regular text-text-base">{language.t("provider.connect.opencodeZen.line2")}</div>
+              <div class="text-14-regular text-text-base">{language.t("provider.connect.mtycoderZen.line1")}</div>
+              <div class="text-14-regular text-text-base">{language.t("provider.connect.mtycoderZen.line2")}</div>
               <div class="text-14-regular text-text-base">
-                {language.t("provider.connect.opencodeZen.visit.prefix")}
-                <Link href="https://opencode.ai/zen" tabIndex={-1}>
-                  {language.t("provider.connect.opencodeZen.visit.link")}
+                {language.t("provider.connect.mtycoderZen.visit.prefix")}
+                <Link href="https://mtycoder.example.com/zen" tabIndex={-1}>
+                  {language.t("provider.connect.mtycoderZen.visit.link")}
                 </Link>
-                {language.t("provider.connect.opencodeZen.visit.suffix")}
+                {language.t("provider.connect.mtycoderZen.visit.suffix")}
               </div>
             </div>
           </Match>

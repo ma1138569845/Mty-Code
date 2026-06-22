@@ -33,7 +33,7 @@ import {
 import { Log } from "../util"
 import { pathToFileURL } from "url"
 import { Filesystem } from "../util"
-import { Hash } from "@mimo-ai/shared/util/hash"
+import { Hash } from "@mty-coder/shared/util/hash"
 import { ACPSessionManager } from "./session"
 import type { ACPConfig } from "./types"
 import { Provider } from "../provider"
@@ -46,7 +46,7 @@ import { Config } from "@/config"
 import { ConfigMCP } from "@/config/mcp"
 import { z } from "zod"
 import { LoadAPIKeyError } from "ai"
-import type { AssistantMessage, Event, OpencodeClient, SessionMessageResponse, ToolPart } from "@mimo-ai/sdk/v2"
+import type { AssistantMessage, Event, OpencodeClient, SessionMessageResponse, ToolPart } from "@mty-coder/sdk/v2"
 import { applyPatch } from "diff"
 import { InstallationVersion } from "@/installation/version"
 
@@ -516,7 +516,7 @@ export class Agent implements ACPAgent {
         "terminal-auth": {
           command: "opencode",
           args: ["auth", "login"],
-          label: "OpenCode Login",
+          label: "MtyCoder Login",
         },
       }
     }
@@ -541,7 +541,7 @@ export class Agent implements ACPAgent {
       },
       authMethods: [authMethod],
       agentInfo: {
-        name: "OpenCode",
+        name: "MtyCoder",
         version: InstallationVersion,
       },
     }
@@ -949,7 +949,7 @@ export class Agent implements ACPAgent {
         }
       } else if (part.type === "file") {
         // Replay file attachments as appropriate ACP content blocks.
-        // OpenCode stores files internally as { type: "file", url, filename, mime }.
+        // MtyCoder stores files internally as { type: "file", url, filename, mime }.
         // We convert these back to ACP blocks based on the URL scheme and MIME type:
         // - file:// URLs → resource_link
         // - data: URLs with image/* → image block

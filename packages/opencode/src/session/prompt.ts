@@ -51,7 +51,7 @@ import { Command } from "../command"
 import { pathToFileURL, fileURLToPath } from "url"
 import { ConfigMarkdown } from "../config"
 import { SessionSummary } from "./summary"
-import { NamedError } from "@mimo-ai/shared/util/error"
+import { NamedError } from "@mty-coder/shared/util/error"
 import { SessionProcessor } from "./processor"
 import { buildLLMRequestPrefix } from "./llm-request-prefix"
 import { prefixCaptureRef } from "./prefix-capture-ref"
@@ -64,7 +64,7 @@ import { SessionStatus } from "./status"
 import { LLM } from "./llm"
 import { MaxMode } from "./max-mode"
 import { Shell } from "@/shell/shell"
-import { AppFileSystem } from "@mimo-ai/shared/filesystem"
+import { AppFileSystem } from "@mty-coder/shared/filesystem"
 import { Truncate } from "@/tool"
 import { decodeDataUrl } from "@/util/data-url"
 import { Process } from "@/util"
@@ -106,7 +106,7 @@ export function recallHintLines(toolCfg: ToolStyleConfig | undefined): string[] 
  * Cap on goal-driven main-loop re-entries per turn — the safety valve against
  * a never-satisfiable condition burning tokens forever. Higher than spawned
  * actors' MAX_PRE_REACT (=3) because main-session goals are usually larger.
- * TODO: lift to mimocode.json config (e.g. session.maxGoalReact).
+ * TODO: lift to mtycoder.json config (e.g. session.maxGoalReact).
  */
 const MAX_GOAL_REACT = 12
 
@@ -170,13 +170,13 @@ const PREDICT_SYSTEM = `You predict the single most likely next message a user w
 
 const PREDICT_NUDGE = `Based on the conversation above, write the user's most likely next message:`
 
-const OUTPUT_LENGTH_CONTINUATION_LIMIT = Flag.MIMOCODE_OUTPUT_LENGTH_CONTINUATION_LIMIT
-const INVALID_OUTPUT_CONTINUATION_LIMIT = Flag.MIMOCODE_INVALID_OUTPUT_CONTINUATION_LIMIT
+const OUTPUT_LENGTH_CONTINUATION_LIMIT = Flag.MTYCODER_OUTPUT_LENGTH_CONTINUATION_LIMIT
+const INVALID_OUTPUT_CONTINUATION_LIMIT = Flag.MTYCODER_INVALID_OUTPUT_CONTINUATION_LIMIT
 
 const log = Log.create({ service: "session.prompt" })
 
 function isExtensionPath(filePath: string): boolean {
-  return /\/\.mimocode\/(tools?|skills?|hooks?)\//.test(filePath)
+  return /\/\.mtycoder\/(tools?|skills?|hooks?)\//.test(filePath)
 }
 const elog = EffectLogger.create({ service: "session.prompt" })
 
@@ -1780,7 +1780,7 @@ NOTE: At any point in time through this workflow you should feel free to ask the
               sessionID,
               phase,
               task_type: taskType,
-              surface: Flag.MIMOCODE_CLIENT,
+              surface: Flag.MTYCODER_CLIENT,
               total_tokens_in: agentMetrics.tokens_in,
               total_tokens_out: agentMetrics.tokens_out,
               files_changed: agentMetrics.files_changed,
@@ -2187,7 +2187,7 @@ NOTE: At any point in time through this workflow you should feel free to ask the
 
           // F37: filter by agentID so subagent slices stay isolated from the
           // main agent's slice within the same session. Without this, an actor
-          // (explore/general/etc) spawned via mimocode's shared-sessionID
+          // (explore/general/etc) spawned via mtycoder's shared-sessionID
           // design would see the parent's full conversation here and drift
           // off-task. agentID === "main" => main agent slice (agent_id = 'main'
           // in DB), agentID === "explore-1" => only explore-1's slice.
@@ -2387,6 +2387,12 @@ NOTE: At any point in time through this workflow you should feel free to ask the
                 lastUserMsg &&
                 !lastUserMsg.parts.some((p) => p.type === "text" && p.text?.includes("Context is filling up"))
               ) {
+                const pressureMsg = pressure >= 4
+                  ? "EMERGENCY: Context is nearly full (>95%). Complete current task immediately and stop. Do NOT start new tasks."
+                  : pressure >= 3
+                    ? "Context is filling up (>85%). Wrap up current work quickly. Save important findings to memory."
+                    : "Context is filling up (>70%). Consider saving important learnings to memory."
+
                 lastUserMsg.parts.push({
                   id: PartID.ascending(),
                   messageID: lastUserMsg.info.id,
@@ -2395,7 +2401,7 @@ NOTE: At any point in time through this workflow you should feel free to ask the
                   synthetic: true,
                   text: [
                     "<system-reminder>",
-                    `Context is filling up (${pressure >= 3 ? ">85%" : ">70%"}).`,
+                    pressureMsg,
                     "If you have important learnings or decisions from this session,",
                     "consider writing them to memory now before context may be reset.",
                     "</system-reminder>",

@@ -1,20 +1,20 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
-  "name": "@mimo-ai/sdk",
+  "name": "@mty-coder/sdk",
   "version": "0.1.1",
-  "description": "TypeScript SDK for the MiMoCode API",
-  "keywords": ["mimo", "mimocode", "ai", "sdk", "coding-assistant"],
+  "description": "TypeScript SDK for the MtyCoder API",
+  "keywords": ["mty", "mtycoder", "ai", "sdk", "coding-assistant"],
   "type": "module",
   "license": "MIT",
-  "author": "Xiaomi MiMo Team",
-  "homepage": "https://mimo.xiaomi.com/en/mimocode",
+  "author": "Xiaomi MtyCoder Team",
+  "homepage": "https://mtycoder.example.com/en/mtycoder",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/XiaomiMiMo/MiMo-Code.git",
+    "url": "git+https://github.com/matyianyuan/MtyCoder.git",
     "directory": "packages/sdk/js"
   },
   "bugs": {
-    "url": "https://github.com/XiaomiMiMo/MiMo-Code/issues"
+    "url": "https://github.com/matyianyuan/MtyCoder/issues"
   },
   "publishConfig": {
     "access": "public"

@@ -3,10 +3,10 @@ import { xdgData, xdgCache, xdgConfig, xdgState } from "xdg-basedir"
 import os from "os"
 import { Context, Effect, Layer } from "effect"
 
-const APP = "mimocode"
+const APP = "mtycoder"
 
 export type ResolvedPaths = {
-  mode: "mimocode_home" | "xdg"
+  mode: "mtycoder_home" | "xdg"
   root?: string
   data: string
   cache: string
@@ -15,24 +15,24 @@ export type ResolvedPaths = {
 }
 
 /**
- * Resolve mimocode's four base directories (config/data/state/cache)
+ * Resolve mtycoder's four base directories (config/data/state/cache)
  * from environment variables.
  *
- * If MIMOCODE_HOME is set and non-empty, the four paths are subdirectories
+ * If MTYCODER_HOME is set and non-empty, the four paths are subdirectories
  * of it. Otherwise, falls through to XDG Base Directory defaults.
  *
- * @throws if MIMOCODE_HOME is set but not an absolute path
+ * @throws if MTYCODER_HOME is set but not an absolute path
  */
-export function resolveMimocodeHome(env: NodeJS.ProcessEnv = process.env): ResolvedPaths {
-  const home = env.MIMOCODE_HOME
+export function resolveMtyCoderHome(env: NodeJS.ProcessEnv = process.env): ResolvedPaths {
+  const home = env.MTYCODER_HOME
   if (home) {
     if (!path.isAbsolute(home)) {
       throw new Error(
-        `MIMOCODE_HOME must be an absolute path, got: ${JSON.stringify(home)}`,
+        `MTYCODER_HOME must be an absolute path, got: ${JSON.stringify(home)}`,
       )
     }
     return {
-      mode: "mimocode_home",
+      mode: "mtycoder_home",
       root: home,
       data: path.join(home, "data"),
       cache: path.join(home, "cache"),
@@ -66,7 +66,7 @@ export namespace Global {
     Service,
     Effect.gen(function* () {
       const home = process.env.HOME || process.env.USERPROFILE || os.homedir()
-      const { data, cache, config, state } = yield* Effect.sync(() => resolveMimocodeHome())
+      const { data, cache, config, state } = yield* Effect.sync(() => resolveMtyCoderHome())
       const bin = path.join(cache, "bin")
       const log = path.join(data, "log")
 

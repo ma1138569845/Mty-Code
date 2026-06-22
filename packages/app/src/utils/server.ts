@@ -1,4 +1,4 @@
-import { createOpencodeClient } from "@mimo-ai/sdk/v2/client"
+import { createOpencodeClient } from "@mty-coder/sdk/v2/client"
 import type { ServerConnection } from "@/context/server"
 
 export function createSdkForServer({
@@ -10,7 +10,7 @@ export function createSdkForServer({
   const auth = (() => {
     if (!server.password) return
     return {
-      Authorization: `Basic ${btoa(`${server.username ?? "opencode"}:${server.password}`)}`,
+      Authorization: `Basic ${btoa(`${server.username ?? "mtycoder"}:${server.password}`)}`,
     }
   })()
 

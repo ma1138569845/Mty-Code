@@ -1,8 +1,8 @@
 import * as i18n from "@solid-primitives/i18n"
 import { createMemo, createResource, type ParentProps } from "solid-js"
-import { I18nProvider } from "@mimo-ai/ui/context/i18n"
+import { I18nProvider } from "@mty-coder/ui/context/i18n"
 import { dict as tuiEn } from "../i18n/en"
-import { dict as uiEn } from "@mimo-ai/ui/i18n/en"
+import { dict as uiEn } from "@mty-coder/ui/i18n/en"
 import { LOCALES, INTL, LABEL_KEY, normalizeLocale, type Locale } from "../i18n/locales"
 import { useKV } from "./kv"
 import { detectSystemLocale } from "../util/system-locale"
@@ -19,22 +19,22 @@ const merge = async (ui: Promise<Source>, tui?: Promise<Source>) => {
 }
 
 const loaders: Record<Exclude<Locale, "en">, () => Promise<Dictionary>> = {
-  zh: () => merge(import("@mimo-ai/ui/i18n/zh"), import("../i18n/zh")),
-  zht: () => merge(import("@mimo-ai/ui/i18n/zht"), import("../i18n/zht")),
-  ko: () => merge(import("@mimo-ai/ui/i18n/ko")),
-  de: () => merge(import("@mimo-ai/ui/i18n/de")),
-  es: () => merge(import("@mimo-ai/ui/i18n/es"), import("../i18n/es")),
-  fr: () => merge(import("@mimo-ai/ui/i18n/fr"), import("../i18n/fr")),
-  da: () => merge(import("@mimo-ai/ui/i18n/da")),
-  ja: () => merge(import("@mimo-ai/ui/i18n/ja"), import("../i18n/ja")),
-  pl: () => merge(import("@mimo-ai/ui/i18n/pl")),
-  ru: () => merge(import("@mimo-ai/ui/i18n/ru"), import("../i18n/ru")),
-  ar: () => merge(import("@mimo-ai/ui/i18n/ar")),
-  no: () => merge(import("@mimo-ai/ui/i18n/no")),
-  br: () => merge(import("@mimo-ai/ui/i18n/br")),
-  th: () => merge(import("@mimo-ai/ui/i18n/th")),
-  bs: () => merge(import("@mimo-ai/ui/i18n/bs")),
-  tr: () => merge(import("@mimo-ai/ui/i18n/tr")),
+  zh: () => merge(import("@mty-coder/ui/i18n/zh"), import("../i18n/zh")),
+  zht: () => merge(import("@mty-coder/ui/i18n/zht"), import("../i18n/zht")),
+  ko: () => merge(import("@mty-coder/ui/i18n/ko")),
+  de: () => merge(import("@mty-coder/ui/i18n/de")),
+  es: () => merge(import("@mty-coder/ui/i18n/es"), import("../i18n/es")),
+  fr: () => merge(import("@mty-coder/ui/i18n/fr"), import("../i18n/fr")),
+  da: () => merge(import("@mty-coder/ui/i18n/da")),
+  ja: () => merge(import("@mty-coder/ui/i18n/ja"), import("../i18n/ja")),
+  pl: () => merge(import("@mty-coder/ui/i18n/pl")),
+  ru: () => merge(import("@mty-coder/ui/i18n/ru"), import("../i18n/ru")),
+  ar: () => merge(import("@mty-coder/ui/i18n/ar")),
+  no: () => merge(import("@mty-coder/ui/i18n/no")),
+  br: () => merge(import("@mty-coder/ui/i18n/br")),
+  th: () => merge(import("@mty-coder/ui/i18n/th")),
+  bs: () => merge(import("@mty-coder/ui/i18n/bs")),
+  tr: () => merge(import("@mty-coder/ui/i18n/tr")),
 }
 
 const cache = new Map<Locale, Dictionary>([["en", base]])

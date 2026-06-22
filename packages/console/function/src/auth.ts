@@ -7,16 +7,16 @@ import { THEME_OPENAUTH } from "@openauthjs/openauth/ui/theme"
 import { GithubProvider } from "@openauthjs/openauth/provider/github"
 import { GoogleOidcProvider } from "@openauthjs/openauth/provider/google"
 import { CloudflareStorage } from "@openauthjs/openauth/storage/cloudflare"
-import { Account } from "@mimo-ai/console-core/account.js"
-import { Workspace } from "@mimo-ai/console-core/workspace.js"
-import { Actor } from "@mimo-ai/console-core/actor.js"
-import { Resource } from "@mimo-ai/console-resource"
-import { User } from "@mimo-ai/console-core/user.js"
-import { and, Database, eq, isNull, or } from "@mimo-ai/console-core/drizzle/index.js"
-import { WorkspaceTable } from "@mimo-ai/console-core/schema/workspace.sql.js"
-import { UserTable } from "@mimo-ai/console-core/schema/user.sql.js"
-import { AuthTable } from "@mimo-ai/console-core/schema/auth.sql.js"
-import { Identifier } from "@mimo-ai/console-core/identifier.js"
+import { Account } from "@mty-coder/console-core/account.js"
+import { Workspace } from "@mty-coder/console-core/workspace.js"
+import { Actor } from "@mty-coder/console-core/actor.js"
+import { Resource } from "@mty-coder/console-resource"
+import { User } from "@mty-coder/console-core/user.js"
+import { and, Database, eq, isNull, or } from "@mty-coder/console-core/drizzle/index.js"
+import { WorkspaceTable } from "@mty-coder/console-core/schema/workspace.sql.js"
+import { UserTable } from "@mty-coder/console-core/schema/user.sql.js"
+import { AuthTable } from "@mty-coder/console-core/schema/auth.sql.js"
+import { Identifier } from "@mty-coder/console-core/identifier.js"
 
 type Env = {
   AuthStorage: KVNamespace
@@ -35,7 +35,7 @@ export const subjects = createSubjects({
 
 const MY_THEME: Theme = {
   ...THEME_OPENAUTH,
-  logo: "https://opencode.ai/favicon-v3.svg",
+  logo: "https://mtycoder.example.com/favicon-v3.svg",
 }
 
 export default {
@@ -111,14 +111,14 @@ export default {
           const emails = (await fetch("https://api.github.com/user/emails", {
             headers: {
               Authorization: `Bearer ${response.tokenset.access}`,
-              "User-Agent": "opencode",
+              "User-Agent": "mtycoder",
               Accept: "application/vnd.github+json",
             },
           }).then((x) => x.json())) as any
           const user = (await fetch("https://api.github.com/user", {
             headers: {
               Authorization: `Bearer ${response.tokenset.access}`,
-              "User-Agent": "opencode",
+              "User-Agent": "mtycoder",
               Accept: "application/vnd.github+json",
             },
           }).then((x) => x.json())) as any

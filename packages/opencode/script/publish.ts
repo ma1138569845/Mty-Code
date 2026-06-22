@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 import { $ } from "bun"
 import pkg from "../package.json"
-import { Script } from "@mimo-ai/script"
+import { Script } from "@mty-coder/script"
 import { fileURLToPath } from "url"
 
 const dir = fileURLToPath(new URL("..", import.meta.url))
@@ -42,20 +42,20 @@ await Bun.file(`./dist/${pkg.name}/package.json`).write(
     {
       name: pkg.name,
       version: version,
-      description: "MiMo Code: Where Models and Agents Co-Evolve",
+      description: "MtyCoder: Where Models and Agents Co-Evolve",
       license: "MIT",
-      author: "Xiaomi MiMo Team",
-      homepage: "https://mimo.xiaomi.com/en/mimocode",
+      author: "Dechnic MtyCoder Team",
+      homepage: "https://mtycoder.example.com/en/mtycoder",
       repository: {
         type: "git",
-        url: "git+https://github.com/XiaomiMiMo/MiMo-Code.git",
+        url: "git+https://github.com/matyianyuan/MtyCoder.git",
       },
       bugs: {
-        url: "https://github.com/XiaomiMiMo/MiMo-Code/issues",
+        url: "https://github.com/matyianyuan/MtyCoder/issues",
       },
-      keywords: ["ai", "cli", "code", "xiaomi", "mimo", "mimocode"],
+      keywords: ["ai", "cli", "code", "mty", "mtycoder", "mtycoder"],
       bin: {
-        mimo: "./bin/mimo",
+        mty: "./bin/mty",
       },
       scripts: {
         postinstall: "bun ./postinstall.mjs || node ./postinstall.mjs",

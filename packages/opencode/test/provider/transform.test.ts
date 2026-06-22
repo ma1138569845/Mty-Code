@@ -147,27 +147,27 @@ describe("ProviderTransform.maxOutputTokens", () => {
     release_date: "2026-01-01",
   }
 
-  test("uses 128K for mimo provider models", () => {
+  test("uses 128K for mty provider models", () => {
     expect(
       ProviderTransform.maxOutputTokens({
         ...baseModel,
-        id: ModelID.make("mimo-auto"),
-        providerID: ProviderID.make("mimo"),
+        id: ModelID.make("mty-auto"),
+        providerID: ProviderID.make("mty"),
       }),
     ).toBe(128_000)
   })
 
-  test("uses 128K for xiaomi provider models", () => {
+  test("uses 128K for mtycoder provider models", () => {
     expect(
       ProviderTransform.maxOutputTokens({
         ...baseModel,
-        id: ModelID.make("mimo-coder"),
-        providerID: ProviderID.make("xiaomi"),
+        id: ModelID.make("mty-coder"),
+        providerID: ProviderID.make("mtycoder"),
       }),
     ).toBe(128_000)
   })
 
-  test("keeps the default cap for non-mimo models", () => {
+  test("keeps the default cap for non-mty models", () => {
     expect(ProviderTransform.maxOutputTokens({ ...baseModel, limit: { context: 1_000_000, output: 64_000 } })).toBe(
       32_000,
     )
@@ -1635,7 +1635,7 @@ describe("ProviderTransform.message - strip openai metadata when store=false", (
       providerID: "opencode",
       api: {
         id: "opencode-test",
-        url: "https://api.mimocode.ai",
+        url: "https://api.mtycoder.ai",
         npm: "@ai-sdk/openai-compatible",
       },
     }
@@ -1669,7 +1669,7 @@ describe("ProviderTransform.message - strip openai metadata when store=false", (
       providerID: "opencode",
       api: {
         id: "opencode-test",
-        url: "https://api.mimocode.ai",
+        url: "https://api.mtycoder.ai",
         npm: "@ai-sdk/openai-compatible",
       },
     }
@@ -2149,10 +2149,10 @@ describe("ProviderTransform.message - cache control on gateway", () => {
 
   test("openai-compatible with claude in model id does NOT trigger caching", () => {
     const model = createModel({
-      id: "mimorouter/claude-opus-4-8",
+      id: "mtyrouter/claude-opus-4-8",
       providerID: "custom",
       api: {
-        id: "mimorouter/claude-opus-4-8",
+        id: "mtyrouter/claude-opus-4-8",
         url: "https://proxy.example.com/v1",
         npm: "@ai-sdk/openai-compatible",
       },

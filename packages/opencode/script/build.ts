@@ -14,10 +14,10 @@ process.chdir(dir)
 
 await import("./generate.ts")
 
-import { Script } from "@mimo-ai/script"
+import { Script } from "@mty-coder/script"
 import pkg from "../package.json"
 
-const BINARY_PREFIX = "mimocode"
+const BINARY_PREFIX = "mtycoder"
 
 // Load migrations from migration directories
 const migrationDirs = (
@@ -170,7 +170,7 @@ await $`rm -rf dist`
 
 const privateDir = path.join(dir, "src", "private")
 if (!fs.existsSync(privateDir)) {
-  const overlaySrc = path.resolve(dir, "../../mimoapi/packages/opencode/src/private")
+  const overlaySrc = path.resolve(dir, "../../mtyapi/packages/opencode/src/private")
   if (fs.existsSync(overlaySrc)) {
     console.log(`Staging overlay entrypoints from ${overlaySrc}`)
     fs.cpSync(overlaySrc, privateDir, { recursive: true })
@@ -232,25 +232,25 @@ for (const item of targets) {
       autoloadTsconfig: true,
       autoloadPackageJson: true,
       target: name.replace(BINARY_PREFIX, "bun") as any,
-      outfile: `dist/${name}/bin/mimo`,
-      execArgv: [`--user-agent=mimocode/${Script.version}`, "--use-system-ca", "--"],
+      outfile: `dist/${name}/bin/mty`,
+      execArgv: [`--user-agent=mtycoder/${Script.version}`, "--use-system-ca", "--"],
       windows: {},
     },
     files: embeddedFileMap ? { "opencode-web-ui.gen.ts": embeddedFileMap } : {},
     entrypoints: ["./src/index.ts", parserWorker, workerPath, ...(embeddedFileMap ? ["opencode-web-ui.gen.ts"] : []), ...privateEntrypoints],
     define: {
-      MIMOCODE_VERSION: `'${Script.version}'`,
+      MTYCODER_VERSION: `'${Script.version}'`,
       OPENCODE_MIGRATIONS: JSON.stringify(migrations),
       OTUI_TREE_SITTER_WORKER_PATH: bunfsRoot + workerRelativePath,
       OPENCODE_WORKER_PATH: workerPath,
-      MIMOCODE_CHANNEL: `'${Script.channel}'`,
+      MTYCODER_CHANNEL: `'${Script.channel}'`,
       OPENCODE_LIBC: item.os === "linux" ? `'${item.abi ?? "glibc"}'` : "",
     },
   })
 
   // Smoke test: only run if binary is for current platform
   if (item.os === process.platform && item.arch === process.arch && !item.abi) {
-    const binaryPath = `dist/${name}/bin/mimo`
+    const binaryPath = `dist/${name}/bin/mty`
     console.log(`Running smoke test: ${binaryPath} --version`)
     try {
       const versionOutput = await $`${binaryPath} --version`.text()
@@ -263,22 +263,22 @@ for (const item of targets) {
 
   await $`rm -rf ./dist/${name}/bin/tui`
   await Bun.file(`dist/${name}/README.md`).write(
-    `This is the ${item.os}-${item.arch} binary for [@mimo-ai/cli](https://www.npmjs.com/package/@mimo-ai/cli). Install that package directly.\n`,
+    `This is the ${item.os}-${item.arch} binary for [@mty-coder/cli](https://www.npmjs.com/package/@mty-coder/cli). Install that package directly.\n`,
   )
   await Bun.file(`dist/${name}/package.json`).write(
     JSON.stringify(
       {
-        name: `@mimo-ai/${name}`,
+        name: `@mty-coder/${name}`,
         version: Script.version,
-        description: "Platform-specific binary for @mimo-ai/cli.",
+        description: "Platform-specific binary for @mty-coder/cli.",
         license: "MIT",
-        author: "Xiaomi MiMo Team",
-        homepage: "https://mimo.xiaomi.com/en/mimocode",
+        author: "Dechnic MtyCoder Team",
+        homepage: "https://mtycoder.example.com/en/mtycoder",
         repository: {
           type: "git",
-          url: "git+https://github.com/XiaomiMiMo/MiMo-Code.git",
+          url: "git+https://github.com/matyianyuan/MtyCoder.git",
         },
-        keywords: ["ai", "coding", "agent", "cli", "mimo"],
+        keywords: ["ai", "coding", "agent", "cli", "mty"],
         os: [item.os],
         cpu: [item.arch],
       },

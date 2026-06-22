@@ -1,5 +1,5 @@
 import { App } from "@slack/bolt"
-import { createOpencode, type ToolPart } from "@mimo-ai/sdk"
+import { createOpencode, type ToolPart } from "@mty-coder/sdk"
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
@@ -19,7 +19,47 @@ const opencode = await createOpencode({
 })
 console.log("✅ Opencode server ready")
 
-const sessions = new Map<string, { client: any; server: any; sessionId: string; channel: string; thread: string }>()
+type Session = {
+  client: any
+  server: any
+  sessionId: string
+  channel: string
+  thread: string
+  lastActive: number
+}
+
+// Cap the in-memory session cache so a long-running bot can't grow it without
+// bound. Sessions idle past the TTL are dropped; when the cache is full the
+// oldest (least-recently-active) entry is evicted to make room.
+const SESSION_TTL_MS = 24 * 60 * 60 * 1000 // 24h
+const SESSION_MAX = 1000
+const sessions = new Map<string, Session>()
+
+function pruneSessions() {
+  const now = Date.now()
+  for (const [key, session] of sessions) {
+    if (now - session.lastActive > SESSION_TTL_MS) sessions.delete(key)
+  }
+}
+
+function evictOldestIfFull() {
+  if (sessions.size < SESSION_MAX) return
+  // Map preserves insertion order; touch() re-inserts on access, so the first
+  // key is the least-recently-active.
+  const oldest = sessions.keys().next().value
+  if (oldest !== undefined) sessions.delete(oldest)
+}
+
+function touch(key: string, session: Session) {
+  session.lastActive = Date.now()
+  // Re-insert to move the entry to the end, keeping insertion order ~ recency.
+  sessions.delete(key)
+  sessions.set(key, session)
+}
+
+// Periodically sweep idle sessions even when no new messages arrive.
+setInterval(pruneSessions, 60 * 60 * 1000).unref?.()
+
 void (async () => {
   const events = await opencode.client.event.subscribe()
   for await (const event of events.stream) {
@@ -71,7 +111,9 @@ app.message(async ({ message, say }) => {
 
   let session = sessions.get(sessionKey)
 
-  if (!session) {
+  if (session) {
+    touch(sessionKey, session)
+  } else {
     console.log("🆕 Creating new opencode session...")
     const { client, server } = opencode
 
@@ -90,7 +132,9 @@ app.message(async ({ message, say }) => {
 
     console.log("✅ Created opencode session:", createResult.data.id)
 
-    session = { client, server, sessionId: createResult.data.id, channel, thread }
+    pruneSessions()
+    evictOldestIfFull()
+    session = { client, server, sessionId: createResult.data.id, channel, thread, lastActive: Date.now() }
     sessions.set(sessionKey, session)
 
     const shareResult = await client.session.share({ path: { id: createResult.data.id } })

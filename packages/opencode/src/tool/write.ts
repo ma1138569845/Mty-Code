@@ -9,7 +9,7 @@ import { Bus } from "../bus"
 import { File } from "../file"
 import { FileWatcher } from "../file/watcher"
 import { Format } from "../format"
-import { AppFileSystem } from "@mimo-ai/shared/filesystem"
+import { AppFileSystem } from "@mty-coder/shared/filesystem"
 import { Instance } from "../project/instance"
 import { SessionCwd } from "./session-cwd"
 import { trimDiff } from "./edit"
@@ -56,6 +56,15 @@ export const WriteTool = Tool.define(
           })
 
           let output = "Wrote file successfully."
+
+          // Auto-verify: check file was written correctly
+          const verifyContent = yield* afs.readFileString(filepath)
+          if (verifyContent === content) {
+            output += "\n\n✓ Write verified: file content matches."
+          } else {
+            output += "\n\n⚠ Write verification: file content differs from expected (may be modified by formatter)."
+          }
+
           yield* lsp.touchFile(filepath, true)
           const diagnostics = yield* lsp.diagnostics()
           const normalizedFilepath = AppFileSystem.normalizePath(filepath)

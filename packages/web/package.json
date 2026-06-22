@@ -1,11 +1,11 @@
 {
-  "name": "@mimo-ai/web",
+  "name": "@mty-coder/web",
   "type": "module",
   "license": "MIT",
   "version": "0.1.1",
   "scripts": {
     "dev": "astro dev",
-    "dev:remote": "VITE_API_URL=https://api.opencode.ai astro dev",
+    "dev:remote": "VITE_API_URL=https://api.mtycoder.example.com astro dev",
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
@@ -36,7 +36,7 @@
     "vscode-languageserver-types": "3.17.5"
   },
   "devDependencies": {
-    "@mimo-ai/cli": "workspace:*",
+    "@mty-coder/cli": "workspace:*",
     "@types/node": "catalog:",
     "@astrojs/check": "0.9.6",
     "typescript": "catalog:"

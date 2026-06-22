@@ -36,7 +36,7 @@ export function pressureLevel(input: {
   cfg: Config.Info
   tokens: MessageV2.Assistant["tokens"]
   model: Provider.Model
-}): 0 | 1 | 2 | 3 {
+}): 0 | 1 | 2 | 3 | 4 {
   if (input.cfg.compaction?.auto === false) return 0
   if (input.model.limit.context === 0) return 0
 
@@ -49,5 +49,14 @@ export function pressureLevel(input: {
   if (ratio < 0.50) return 0
   if (ratio < 0.70) return 1
   if (ratio < 0.85) return 2
-  return 3
+  if (ratio < 0.95) return 3
+  return 4 // Emergency: >95% usage, immediate compaction needed
+}
+
+export function isEmergencyOverflow(input: {
+  cfg: Config.Info
+  tokens: MessageV2.Assistant["tokens"]
+  model: Provider.Model
+}): boolean {
+  return pressureLevel(input) >= 4
 }

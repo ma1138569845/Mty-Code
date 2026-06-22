@@ -8,7 +8,7 @@ import { DialogPrompt } from "../ui/dialog-prompt"
 import { Link } from "../ui/link"
 import { useTheme } from "../context/theme"
 import { TextAttributes } from "@opentui/core"
-import type { ProviderAuthAuthorization, ProviderAuthMethod } from "@mimo-ai/sdk/v2"
+import type { ProviderAuthAuthorization, ProviderAuthMethod } from "@mty-coder/sdk/v2"
 import { DialogModel } from "./dialog-model"
 import { useKeyboard } from "@opentui/solid"
 import * as Clipboard from "@tui/util/clipboard"
@@ -174,12 +174,12 @@ export async function runCustomProviderWizard(opts: {
     return DialogPrompt.show(dialog, `${title} (${n}/${total})`, { placeholder, value })
   }
 
-  const providerIDRaw = await step(1, 6, "Provider id", "e.g. mimorouter")
+  const providerIDRaw = await step(1, 6, "Provider id", "e.g. mtyrouter")
   if (providerIDRaw === null) return
   const providerID = providerIDRaw.trim()
   if (!providerID) return
 
-  const nameRaw = await step(2, 6, "Display name", "e.g. MiMo Router", providerID)
+  const nameRaw = await step(2, 6, "Display name", "e.g. MtyCoder Router", providerID)
   if (nameRaw === null) return
   const name = nameRaw.trim() || providerID
 
@@ -364,22 +364,22 @@ function ApiMethod(props: ApiMethodProps) {
           opencode: (
             <box gap={1}>
               <text fg={theme.textMuted}>
-                OpenCode Zen gives you access to all the best coding models at the cheapest prices with a single API
+                MtyCoder Zen gives you access to all the best coding models at the cheapest prices with a single API
                 key.
               </text>
               <text fg={theme.text}>
-                Go to <span style={{ fg: theme.primary }}>https://opencode.ai/zen</span> to get a key
+                Go to <span style={{ fg: theme.primary }}>https://mtycoder.example.com/zen</span> to get a key
               </text>
             </box>
           ),
           "opencode-go": (
             <box gap={1}>
               <text fg={theme.textMuted}>
-                OpenCode Go is a $10 per month subscription that provides reliable access to popular open coding models
+                MtyCoder Go is a $10 per month subscription that provides reliable access to popular open coding models
                 with generous usage limits.
               </text>
               <text fg={theme.text}>
-                Go to <span style={{ fg: theme.primary }}>https://opencode.ai/zen</span> and enable OpenCode Go
+                Go to <span style={{ fg: theme.primary }}>https://mtycoder.example.com/zen</span> and enable MtyCoder Go
               </text>
             </box>
           ),

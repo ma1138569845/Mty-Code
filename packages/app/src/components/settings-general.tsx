@@ -1,13 +1,13 @@
 import { Component, Show, createMemo, createResource, onMount, type JSX } from "solid-js"
 import { createStore } from "solid-js/store"
-import { Button } from "@mimo-ai/ui/button"
-import { Icon } from "@mimo-ai/ui/icon"
-import { Select } from "@mimo-ai/ui/select"
-import { Switch } from "@mimo-ai/ui/switch"
-import { TextField } from "@mimo-ai/ui/text-field"
-import { Tooltip } from "@mimo-ai/ui/tooltip"
-import { useTheme, type ColorScheme } from "@mimo-ai/ui/theme/context"
-import { showToast } from "@mimo-ai/ui/toast"
+import { Button } from "@mty-coder/ui/button"
+import { Icon } from "@mty-coder/ui/icon"
+import { Select } from "@mty-coder/ui/select"
+import { Switch } from "@mty-coder/ui/switch"
+import { TextField } from "@mty-coder/ui/text-field"
+import { Tooltip } from "@mty-coder/ui/tooltip"
+import { useTheme, type ColorScheme } from "@mty-coder/ui/theme/context"
+import { showToast } from "@mty-coder/ui/toast"
 import { useParams } from "@solidjs/router"
 import { useLanguage } from "@/context/language"
 import { usePermission } from "@/context/permission"
@@ -385,7 +385,7 @@ export const SettingsGeneral: Component = () => {
           description={
             <>
               {language.t("settings.general.row.theme.description")}{" "}
-              <Link href="https://opencode.ai/docs/themes/">{language.t("common.learnMore")}</Link>
+              <Link href="https://mtycoder.example.com/docs/themes/">{language.t("common.learnMore")}</Link>
             </>
           }
         >

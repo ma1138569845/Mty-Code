@@ -1,9 +1,9 @@
 import type { APIEvent } from "@solidjs/start/server"
-import { and, Database, eq, isNull } from "@mimo-ai/console-core/drizzle/index.js"
-import { KeyTable } from "@mimo-ai/console-core/schema/key.sql.js"
-import { WorkspaceTable } from "@mimo-ai/console-core/schema/workspace.sql.js"
-import { ModelTable } from "@mimo-ai/console-core/schema/model.sql.js"
-import { ZenData } from "@mimo-ai/console-core/model.js"
+import { and, Database, eq, isNull } from "@mty-coder/console-core/drizzle/index.js"
+import { KeyTable } from "@mty-coder/console-core/schema/key.sql.js"
+import { WorkspaceTable } from "@mty-coder/console-core/schema/workspace.sql.js"
+import { ModelTable } from "@mty-coder/console-core/schema/model.sql.js"
+import { ZenData } from "@mty-coder/console-core/model.js"
 
 export async function OPTIONS(_input: APIEvent) {
   return new Response(null, {
@@ -30,7 +30,7 @@ export async function GET(input: APIEvent) {
           id,
           object: "model",
           created: Math.floor(Date.now() / 1000),
-          owned_by: "opencode",
+          owned_by: "mtycoder",
         })),
     }),
     {

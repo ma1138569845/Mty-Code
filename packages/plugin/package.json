@@ -1,20 +1,20 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
-  "name": "@mimo-ai/plugin",
+  "name": "@mty-coder/plugin",
   "version": "0.1.1",
-  "description": "Plugin SDK for extending MiMoCode",
-  "keywords": ["mimo", "mimocode", "ai", "plugin", "coding-assistant"],
+  "description": "Plugin SDK for extending MtyCoder",
+  "keywords": ["mty", "mtycoder", "ai", "plugin", "coding-assistant"],
   "type": "module",
   "license": "MIT",
-  "author": "Xiaomi MiMo Team",
-  "homepage": "https://mimo.xiaomi.com/en/mimocode",
+  "author": "Xiaomi MtyCoder Team",
+  "homepage": "https://mtycoder.example.com/en/mtycoder",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/XiaomiMiMo/MiMo-Code.git",
+    "url": "git+https://github.com/matyianyuan/MtyCoder.git",
     "directory": "packages/plugin"
   },
   "bugs": {
-    "url": "https://github.com/XiaomiMiMo/MiMo-Code/issues"
+    "url": "https://github.com/matyianyuan/MtyCoder/issues"
   },
   "publishConfig": {
     "access": "public"
@@ -32,7 +32,7 @@
     "dist"
   ],
   "dependencies": {
-    "@mimo-ai/sdk": "workspace:*",
+    "@mty-coder/sdk": "workspace:*",
     "effect": "catalog:",
     "zod": "catalog:"
   },

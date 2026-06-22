@@ -28,7 +28,7 @@ import { Provider } from "@/provider"
 import { errors } from "../../error"
 import { lazy } from "@/util/lazy"
 import { Bus } from "@/bus"
-import { NamedError } from "@mimo-ai/shared/util/error"
+import { NamedError } from "@mty-coder/shared/util/error"
 import { jsonRequest, runRequest } from "./trace"
 
 const log = Log.create({ service: "server" })
@@ -67,7 +67,7 @@ export const SessionRoutes = lazy(() =>
       "/",
       describeRoute({
         summary: "List sessions",
-        description: "Get a list of all OpenCode sessions, sorted by most recently updated.",
+        description: "Get a list of all MtyCoder sessions, sorted by most recently updated.",
         operationId: "session.list",
         responses: {
           200: {
@@ -136,7 +136,7 @@ export const SessionRoutes = lazy(() =>
       "/:sessionID",
       describeRoute({
         summary: "Get session",
-        description: "Retrieve detailed information about a specific OpenCode session.",
+        description: "Retrieve detailed information about a specific MtyCoder session.",
         tags: ["Session"],
         operationId: "session.get",
         responses: {
@@ -276,7 +276,7 @@ export const SessionRoutes = lazy(() =>
       "/",
       describeRoute({
         summary: "Create session",
-        description: "Create a new OpenCode session for interacting with AI assistants and managing conversations.",
+        description: "Create a new MtyCoder session for interacting with AI assistants and managing conversations.",
         operationId: "session.create",
         responses: {
           ...errors(400),
@@ -971,7 +971,7 @@ export const SessionRoutes = lazy(() =>
         c.header("Content-Type", "application/json")
         return stream(c, async (stream) => {
           const body = c.req.valid("json")
-          // If the HTTP client gives up (TUI exits, driver kills its `mimo run`
+          // If the HTTP client gives up (TUI exits, driver kills its `mty run`
           // client on its own per-turn timeout, network drop), we have to drive
           // the server-side runner to Idle ourselves. Otherwise the prompt
           // fiber keeps running with no consumer, and any next POST attaches

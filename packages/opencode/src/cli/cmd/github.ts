@@ -247,7 +247,7 @@ export const GithubInstallCommand = cmd({
                 "",
                 "    3. Go to a GitHub issue and comment `/oc summarize` to see the agent in action",
                 "",
-                "   Learn more about the GitHub agent - https://opencode.ai/docs/github/#usage-examples",
+                "   Learn more about the GitHub agent - https://mtycoder.example.com/docs/github/#usage-examples",
               ].join("\n"),
             )
           }
@@ -368,7 +368,7 @@ export const GithubInstallCommand = cmd({
 
             async function getInstallation() {
               return await fetch(
-                `https://api.opencode.ai/get_github_app_installation?owner=${app.owner}&repo=${app.repo}`,
+                `https://api.mtycoder.example.com/get_github_app_installation?owner=${app.owner}&repo=${app.repo}`,
               )
                 .then((res) => res.json())
                 .then((data) => data.installation)
@@ -411,7 +411,7 @@ jobs:
           persist-credentials: false
 
       - name: Run opencode
-        uses: anomalyco/opencode/github@latest${envStr}
+        uses: matyianyuan/MtyCoder/github@latest${envStr}
         with:
           model: ${provider}/${model}`,
             )
@@ -481,7 +481,7 @@ export const GithubRunCommand = cmd({
           ? (payload as IssueCommentEvent | IssuesEvent).issue.number
           : (payload as PullRequestEvent | PullRequestReviewCommentEvent).pull_request.number
       const runUrl = `/${owner}/${repo}/actions/runs/${runId}`
-      const shareBaseUrl = isMock ? "https://dev.opencode.ai" : "https://opencode.ai"
+      const shareBaseUrl = isMock ? "https://dev.mtycoder.example.com" : "https://mtycoder.example.com"
 
       let appToken: string
       let octoRest: Octokit
@@ -572,7 +572,7 @@ export const GithubRunCommand = cmd({
           await AppRuntime.runPromise(SessionShare.Service.use((svc) => svc.share(session.id)))
           return session.id.slice(-8)
         })()
-        console.log("mimocode session", session.id)
+        console.log("mtycoder session", session.id)
 
         // Handle event types:
         // REPO_EVENTS (schedule, workflow_dispatch): no issue/PR context, output to logs/PR only
@@ -745,7 +745,7 @@ export const GithubRunCommand = cmd({
 
       function normalizeOidcBaseUrl(): string {
         const value = process.env["OIDC_BASE_URL"]
-        if (!value) return "https://api.opencode.ai"
+        if (!value) return "https://api.mtycoder.example.com"
         return value.replace(/\/+$/, "")
       }
 
@@ -940,7 +940,7 @@ export const GithubRunCommand = cmd({
       }
 
       async function chat(message: string, files: PromptFiles = []) {
-        console.log("Sending message to mimocode...")
+        console.log("Sending message to mtycoder...")
 
         return AppRuntime.runPromise(
           Effect.gen(function* () {

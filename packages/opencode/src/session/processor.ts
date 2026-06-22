@@ -145,6 +145,7 @@ interface ProcessorContext extends Input {
   stepStartedAt: number | undefined
   firstTokenAt: number | undefined
   stepPartIds: PartID[]
+  lastErrorHint: string | undefined
 }
 
 type StreamEvent = Event
@@ -199,6 +200,7 @@ export const layer: Layer.Layer<
         stepStartedAt: undefined,
         firstTokenAt: undefined,
         stepPartIds: [],
+        lastErrorHint: undefined,
       }
       let aborted = false
       // Only the main agent owns session-level status. Subagents (explore,
@@ -433,7 +435,22 @@ export const layer: Layer.Layer<
           }
 
           case "tool-error": {
-            yield* failToolCall(value.toolCallId, value.error)
+            // Self-correction: analyze error and append hint for the LLM
+            const errorMsg = typeof value.error === "string" ? value.error : String(value.error)
+            const isTestFailure = errorMsg.includes("FAIL") || errorMsg.includes("failed") || errorMsg.includes("AssertionError") || errorMsg.includes("expect(")
+            const isBuildFailure = errorMsg.includes("error TS") || errorMsg.includes("SyntaxError") || errorMsg.includes("Cannot find module") || errorMsg.includes("Unexpected token")
+            const isEditFailure = errorMsg.includes("oldString") || errorMsg.includes("not found in file") || errorMsg.includes("appears multiple times")
+
+            let enhancedError = value.error
+            if (isTestFailure) {
+              enhancedError = `${errorMsg}\n\n[Self-correction] A test failed. Analyze the error output above, identify the root cause in the source code (not the test), and fix the implementation. Re-read the relevant source files if needed.`
+            } else if (isBuildFailure) {
+              enhancedError = `${errorMsg}\n\n[Self-correction] A build/compile error occurred. Read the error message carefully, check the exact file and line number, and fix the syntax or import issue.`
+            } else if (isEditFailure) {
+              enhancedError = `${errorMsg}\n\n[Self-correction] An edit operation failed. Re-read the target file to see its current state, then retry the edit with the correct content that actually exists in the file.`
+            }
+
+            yield* failToolCall(value.toolCallId, enhancedError)
             yield* bus
               .publish(Metrics.ToolCall, {
                 sessionID: ctx.sessionID,

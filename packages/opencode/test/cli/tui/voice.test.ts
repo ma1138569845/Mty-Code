@@ -3,52 +3,52 @@ import { RealtimeVAD, type VADSegment } from "../../../src/cli/cmd/tui/util/vad"
 
 describe("voice", () => {
   describe("resolveVoiceConfig", () => {
-    test("returns xiaomi defaults when no config provided", async () => {
+    test("returns mtycoder defaults when no config provided", async () => {
       const { resolveVoiceConfig } = await import("../../../src/cli/cmd/tui/util/voice")
       const result = resolveVoiceConfig(undefined)
-      expect(result.asr.providerID).toBe("xiaomi")
-      expect(result.asr.model).toBe("mimo-v2.5-asr")
-      expect(result.control.providerID).toBe("xiaomi")
-      expect(result.control.model).toBe("mimo-v2.5")
+      expect(result.asr.providerID).toBe("mtycoder")
+      expect(result.asr.model).toBe("mty-v2.5-asr")
+      expect(result.control.providerID).toBe("mtycoder")
+      expect(result.control.model).toBe("mty-v2.5")
     })
 
-    test("returns xiaomi defaults when config is empty object", async () => {
+    test("returns mtycoder defaults when config is empty object", async () => {
       const { resolveVoiceConfig } = await import("../../../src/cli/cmd/tui/util/voice")
       const result = resolveVoiceConfig({})
-      expect(result.asr.providerID).toBe("xiaomi")
-      expect(result.asr.model).toBe("mimo-v2.5-asr")
-      expect(result.control.providerID).toBe("xiaomi")
-      expect(result.control.model).toBe("mimo-v2.5")
+      expect(result.asr.providerID).toBe("mtycoder")
+      expect(result.asr.model).toBe("mty-v2.5-asr")
+      expect(result.control.providerID).toBe("mtycoder")
+      expect(result.control.model).toBe("mty-v2.5")
     })
 
     test("parses custom asr_model correctly", async () => {
       const { resolveVoiceConfig } = await import("../../../src/cli/cmd/tui/util/voice")
-      const result = resolveVoiceConfig({ asr_model: "newapi/mimo-v2.5-asr" })
+      const result = resolveVoiceConfig({ asr_model: "newapi/mty-v2.5-asr" })
       expect(result.asr.providerID).toBe("newapi")
-      expect(result.asr.model).toBe("mimo-v2.5-asr")
-      expect(result.control.providerID).toBe("xiaomi")
-      expect(result.control.model).toBe("mimo-v2.5")
+      expect(result.asr.model).toBe("mty-v2.5-asr")
+      expect(result.control.providerID).toBe("mtycoder")
+      expect(result.control.model).toBe("mty-v2.5")
     })
 
     test("parses custom control_model correctly", async () => {
       const { resolveVoiceConfig } = await import("../../../src/cli/cmd/tui/util/voice")
-      const result = resolveVoiceConfig({ control_model: "openrouter/xiaomi/mimo-v2.5" })
-      expect(result.asr.providerID).toBe("xiaomi")
-      expect(result.asr.model).toBe("mimo-v2.5-asr")
+      const result = resolveVoiceConfig({ control_model: "openrouter/mty-v2.5" })
+      expect(result.asr.providerID).toBe("mtycoder")
+      expect(result.asr.model).toBe("mty-v2.5-asr")
       expect(result.control.providerID).toBe("openrouter")
-      expect(result.control.model).toBe("xiaomi/mimo-v2.5")
+      expect(result.control.model).toBe("mty-v2.5")
     })
 
     test("supports both custom asr and control", async () => {
       const { resolveVoiceConfig } = await import("../../../src/cli/cmd/tui/util/voice")
       const result = resolveVoiceConfig({
-        asr_model: "newapi/mimo-v2.5-asr",
-        control_model: "openrouter/xiaomi/mimo-v2.5",
+        asr_model: "newapi/mty-v2.5-asr",
+        control_model: "openrouter/mty-v2.5",
       })
       expect(result.asr.providerID).toBe("newapi")
-      expect(result.asr.model).toBe("mimo-v2.5-asr")
+      expect(result.asr.model).toBe("mty-v2.5-asr")
       expect(result.control.providerID).toBe("openrouter")
-      expect(result.control.model).toBe("xiaomi/mimo-v2.5")
+      expect(result.control.model).toBe("mty-v2.5")
     })
 
     test("handles model IDs with multiple slashes", async () => {
@@ -60,9 +60,9 @@ describe("voice", () => {
 
     test("treats no-slash model ID as model with default provider", async () => {
       const { resolveVoiceConfig } = await import("../../../src/cli/cmd/tui/util/voice")
-      const result = resolveVoiceConfig({ asr_model: "mimo-v2.5-asr" })
-      expect(result.asr.providerID).toBe("xiaomi")
-      expect(result.asr.model).toBe("mimo-v2.5-asr")
+      const result = resolveVoiceConfig({ asr_model: "mty-v2.5-asr" })
+      expect(result.asr.providerID).toBe("mtycoder")
+      expect(result.asr.model).toBe("mty-v2.5-asr")
     })
   })
 
@@ -78,7 +78,7 @@ describe("voice", () => {
       const { resolveCredentials } = await import("../../../src/cli/cmd/tui/util/voice")
       const result = resolveCredentials(
         [makeProvider("openrouter", { key: "sk-or-123", modelUrl: "https://openrouter.ai/api/v1" })],
-        { providerID: "openrouter", model: "xiaomi/mimo-v2.5" },
+        { providerID: "openrouter", model: "mty-v2.5" },
       )
       expect(result).toEqual({ apiKey: "sk-or-123", baseUrl: "https://openrouter.ai/api/v1" })
     })
@@ -87,7 +87,7 @@ describe("voice", () => {
       const { resolveCredentials } = await import("../../../src/cli/cmd/tui/util/voice")
       const result = resolveCredentials(
         [makeProvider("internal", { apiKey: "sk-int", baseURL: "https://internal.example.com/v1" })],
-        { providerID: "internal", model: "mimo-v2.5" },
+        { providerID: "internal", model: "mty-v2.5" },
       )
       expect(result).toEqual({ apiKey: "sk-int", baseUrl: "https://internal.example.com/v1" })
     })
@@ -96,7 +96,7 @@ describe("voice", () => {
       const { resolveCredentials } = await import("../../../src/cli/cmd/tui/util/voice")
       const result = resolveCredentials(
         [makeProvider("openrouter", { key: "sk-or-123", modelUrl: "https://openrouter.ai/api/v1" })],
-        { providerID: "openrouter", model: "xiaomi/mimo-v2.5" },
+        { providerID: "openrouter", model: "mty-v2.5" },
       )
       expect("apiKey" in result && result.baseUrl).toBe("https://openrouter.ai/api/v1")
     })
@@ -116,7 +116,7 @@ describe("voice", () => {
       expect(result).toEqual({ error: "no_key", providerID: "internal", model: "m" })
     })
 
-    test("returns no_url for non-xiaomi provider without baseURL", async () => {
+    test("returns no_url for non-mtycoder provider without baseURL", async () => {
       const { resolveCredentials } = await import("../../../src/cli/cmd/tui/util/voice")
       const result = resolveCredentials(
         [makeProvider("custom", { key: "sk-x" })],
@@ -125,13 +125,13 @@ describe("voice", () => {
       expect(result).toEqual({ error: "no_url", providerID: "custom", model: "m" })
     })
 
-    test("falls back to hardcoded URL only for xiaomi", async () => {
+    test("falls back to hardcoded URL only for mtycoder", async () => {
       const { resolveCredentials } = await import("../../../src/cli/cmd/tui/util/voice")
       const result = resolveCredentials(
-        [makeProvider("xiaomi", { key: "sk-x" })],
-        { providerID: "xiaomi", model: "mimo-v2.5-asr" },
+        [makeProvider("mtycoder", { key: "sk-x" })],
+        { providerID: "mtycoder", model: "mty-v2.5-asr" },
       )
-      expect(result).toEqual({ apiKey: "sk-x", baseUrl: "https://api.xiaomimimo.com/v1" })
+      expect(result).toEqual({ apiKey: "sk-x", baseUrl: "https://api.mtycoder.example.com/v1" })
     })
   })
 
@@ -334,7 +334,7 @@ describe("voice", () => {
         audio: new Int16Array(100),
         apiKey: "test-key",
         baseUrl: "http://127.0.0.1:1",
-        model: "custom-provider/mimo-v2.5",
+        model: "custom-provider/mty-v2.5",
         currentText: "hello",
         currentAgent: "build",
         availableAgents: ["build", "plan"],

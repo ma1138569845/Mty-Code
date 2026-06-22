@@ -380,7 +380,7 @@ export interface Interface {
 
   /**
    * Await all in-flight writers across sessions up to `timeoutMs`. Used by
-   * the CLI shutdown path so headless `mimo run` invocations don't exit
+   * the CLI shutdown path so headless `mty run` invocations don't exit
    * while a forked checkpoint writer is still waiting on its LLM round-trip.
    * Returns the count of writers that completed vs. still pending when the
    * timeout fired.
@@ -543,7 +543,7 @@ export const layer: Layer.Layer<
 
       // Compute boundary for last_checkpoint_message_id bookkeeping. Layer 6
       // (Task 16): role-aware adjustment to ensure tool_use/tool_result pairs
-      // and same-message.id thinking blocks aren't split. OpenCode's ToolPart
+      // and same-message.id thinking blocks aren't split. MtyCoder's ToolPart
       // carries both use (input) and result (output) on the SAME message, so
       // we project each ToolPart to both a tool_use and a tool_result block —
       // pairing is intrinsically satisfied today and the algorithm acts as a

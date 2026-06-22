@@ -1,10 +1,10 @@
-import type { Session } from "@mimo-ai/sdk/v2/client"
-import { Avatar } from "@mimo-ai/ui/avatar"
-import { Icon } from "@mimo-ai/ui/icon"
-import { IconButton } from "@mimo-ai/ui/icon-button"
-import { Spinner } from "@mimo-ai/ui/spinner"
-import { Tooltip } from "@mimo-ai/ui/tooltip"
-import { getFilename } from "@mimo-ai/shared/util/path"
+import type { Session } from "@mty-coder/sdk/v2/client"
+import { Avatar } from "@mty-coder/ui/avatar"
+import { Icon } from "@mty-coder/ui/icon"
+import { IconButton } from "@mty-coder/ui/icon-button"
+import { Spinner } from "@mty-coder/ui/spinner"
+import { Tooltip } from "@mty-coder/ui/tooltip"
+import { getFilename } from "@mty-coder/shared/util/path"
 import { A, useParams } from "@solidjs/router"
 import { type Accessor, createMemo, For, type JSX, Match, Show, Switch } from "solid-js"
 import { useGlobalSync } from "@/context/global-sync"
@@ -44,7 +44,7 @@ export const ProjectIcon = (props: { project: LocalProject; class?: string; noti
           fallback={name()}
           src={
             props.project.id === OPENCODE_PROJECT_ID
-              ? "https://opencode.ai/favicon.svg"
+              ? "https://mtycoder.example.com/favicon.svg"
               : props.project.icon?.override || props.project.icon?.url
           }
           {...getAvatarColors(props.project.icon?.color)}

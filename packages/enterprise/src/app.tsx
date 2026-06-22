@@ -1,16 +1,16 @@
 import { Router } from "@solidjs/router"
 import { FileRoutes } from "@solidjs/start/router"
-import { Font } from "@mimo-ai/ui/font"
+import { Font } from "@mty-coder/ui/font"
 import { MetaProvider } from "@solidjs/meta"
-import { MarkedProvider } from "@mimo-ai/ui/context/marked"
-import { DialogProvider } from "@mimo-ai/ui/context/dialog"
-import { I18nProvider, type UiI18nParams } from "@mimo-ai/ui/context"
-import { dict as uiEn } from "@mimo-ai/ui/i18n/en"
-import { dict as uiZh } from "@mimo-ai/ui/i18n/zh"
+import { MarkedProvider } from "@mty-coder/ui/context/marked"
+import { DialogProvider } from "@mty-coder/ui/context/dialog"
+import { I18nProvider, type UiI18nParams } from "@mty-coder/ui/context"
+import { dict as uiEn } from "@mty-coder/ui/i18n/en"
+import { dict as uiZh } from "@mty-coder/ui/i18n/zh"
 import { createEffect, createMemo, Suspense, type ParentProps } from "solid-js"
 import { getRequestEvent } from "solid-js/web"
 import "./app.css"
-import { Favicon } from "@mimo-ai/ui/favicon"
+import { Favicon } from "@mty-coder/ui/favicon"
 
 function resolveTemplate(text: string, params?: UiI18nParams) {
   if (!params) return text

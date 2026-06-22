@@ -1,8 +1,8 @@
-import { withAlpha } from "@mimo-ai/ui/theme/color"
-import { useTheme } from "@mimo-ai/ui/theme/context"
-import { resolveThemeVariant } from "@mimo-ai/ui/theme/resolve"
-import type { HexColor } from "@mimo-ai/ui/theme/types"
-import { showToast } from "@mimo-ai/ui/toast"
+import { withAlpha } from "@mty-coder/ui/theme/color"
+import { useTheme } from "@mty-coder/ui/theme/context"
+import { resolveThemeVariant } from "@mty-coder/ui/theme/resolve"
+import type { HexColor } from "@mty-coder/ui/theme/types"
+import { showToast } from "@mty-coder/ui/toast"
 import type { FitAddon, Ghostty, Terminal as Term } from "ghostty-web"
 import { type ComponentProps, createEffect, createMemo, onCleanup, onMount, splitProps } from "solid-js"
 import { SerializeAddon } from "@/addons/serialize"
@@ -171,7 +171,7 @@ export const Terminal = (props: TerminalProps) => {
   const client = sdk.client
   const url = sdk.url
   const auth = server.current?.http
-  const username = auth?.username ?? "opencode"
+  const username = auth?.username ?? "mtycoder"
   const password = auth?.password ?? ""
   const sameOrigin = new URL(url, location.href).origin === location.origin
   let container!: HTMLDivElement
@@ -519,7 +519,7 @@ export const Terminal = (props: TerminalProps) => {
           try {
             const tokenUrl = new URL(url + `/pty/${id}/connect-token`)
             const headers: Record<string, string> = {
-              "x-mimocode-ticket": "1",
+              "x-mtycoder-ticket": "1",
               Authorization: `Basic ${btoa(`${username}:${password}`)}`,
             }
             const res = await fetch(tokenUrl, { method: "POST", headers })

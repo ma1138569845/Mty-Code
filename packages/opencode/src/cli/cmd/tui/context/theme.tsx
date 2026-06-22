@@ -2,7 +2,7 @@ import { CliRenderEvents, SyntaxStyle, RGBA, type TerminalColors } from "@opentu
 import path from "path"
 import { createEffect, createMemo, onCleanup, onMount } from "solid-js"
 import { createSimpleContext } from "./helper"
-import { Glob } from "@mimo-ai/shared/util/glob"
+import { Glob } from "@mty-coder/shared/util/glob"
 import aura from "./theme/aura.json" with { type: "json" }
 import ayu from "./theme/ayu.json" with { type: "json" }
 import catppuccin from "./theme/catppuccin.json" with { type: "json" }
@@ -24,7 +24,7 @@ import nightowl from "./theme/nightowl.json" with { type: "json" }
 import nord from "./theme/nord.json" with { type: "json" }
 import osakaJade from "./theme/osaka-jade.json" with { type: "json" }
 import onedark from "./theme/one-dark.json" with { type: "json" }
-import mimocode from "./theme/mimocode.json" with { type: "json" }
+import mtycoder from "./theme/mtycoder.json" with { type: "json" }
 import orng from "./theme/orng.json" with { type: "json" }
 import lucentOrng from "./theme/lucent-orng.json" with { type: "json" }
 import palenight from "./theme/palenight.json" with { type: "json" }
@@ -36,6 +36,7 @@ import vercel from "./theme/vercel.json" with { type: "json" }
 import vesper from "./theme/vesper.json" with { type: "json" }
 import zenburn from "./theme/zenburn.json" with { type: "json" }
 import carbonfox from "./theme/carbonfox.json" with { type: "json" }
+import frost from "./theme/frost.json" with { type: "json" }
 import { useKV } from "./kv"
 import { useRenderer } from "@opentui/solid"
 import { createStore, produce } from "solid-js/store"
@@ -43,7 +44,7 @@ import { Global } from "@/global"
 import { Filesystem } from "@/util"
 import { useTuiConfig } from "./tui-config"
 import { isRecord } from "@/util/record"
-import type { TuiThemeCurrent } from "@mimo-ai/plugin/tui"
+import type { TuiThemeCurrent } from "@mty-coder/plugin/tui"
 
 type Theme = TuiThemeCurrent & {
   _hasSelectedListItemText: boolean
@@ -86,9 +87,9 @@ export type ThemeJson = {
 }
 
 const PLAIN_TERMINAL_THEME: ThemeJson = {
-  ...mimocode,
+  ...mtycoder,
   theme: {
-    ...mimocode.theme,
+    ...mtycoder.theme,
     text: {
       dark: "darkStep12",
       light: "lightStep12",
@@ -142,7 +143,7 @@ export const DEFAULT_THEMES: Record<string, ThemeJson> = {
   nord,
   ["one-dark"]: onedark,
   ["osaka-jade"]: osakaJade,
-  mimocode,
+  mtycoder,
   orng,
   ["lucent-orng"]: lucentOrng,
   palenight,
@@ -154,6 +155,7 @@ export const DEFAULT_THEMES: Record<string, ThemeJson> = {
   vercel,
   zenburn,
   carbonfox,
+  frost,
 }
 
 type State = {
@@ -190,7 +192,7 @@ const [store, setStore] = createStore<State>({
   themes: listThemes(),
   mode: "dark",
   lock: undefined,
-  active: "mimocode",
+  active: "mtycoder",
   ready: false,
 })
 
@@ -355,8 +357,8 @@ export const { use: useTheme, provider: ThemeProvider } = createSimpleContext({
         }
         draft.mode = mode
         draft.lock = lock
-        const active = props.plain ? "system" : config.theme ?? kv.get("theme", "mimocode")
-        draft.active = typeof active === "string" ? active : "mimocode"
+        const active = props.plain ? "system" : config.theme ?? kv.get("theme", "mtycoder")
+        draft.active = typeof active === "string" ? active : "mtycoder"
         draft.ready = false
       }),
     )
@@ -376,7 +378,7 @@ export const { use: useTheme, provider: ThemeProvider } = createSimpleContext({
             syncThemes()
           })
           .catch(() => {
-            setStore("active", "mimocode")
+            setStore("active", "mtycoder")
           }),
       ]).finally(() => {
         setStore("ready", true)
@@ -395,7 +397,7 @@ export const { use: useTheme, provider: ThemeProvider } = createSimpleContext({
             systemTheme = undefined
             syncThemes()
             if (store.active === "system") {
-              setStore("active", "mimocode")
+              setStore("active", "mtycoder")
             }
             return
           }
@@ -406,7 +408,7 @@ export const { use: useTheme, provider: ThemeProvider } = createSimpleContext({
           systemTheme = undefined
           syncThemes()
           if (store.active === "system") {
-            setStore("active", "mimocode")
+            setStore("active", "mtycoder")
           }
         })
     }
@@ -477,7 +479,7 @@ export const { use: useTheme, provider: ThemeProvider } = createSimpleContext({
         if (theme) return resolveTheme(theme, store.mode)
       }
 
-      return resolveTheme(store.themes.mimocode, store.mode)
+      return resolveTheme(store.themes.mtycoder, store.mode)
     })
 
     createEffect(() => {
@@ -539,7 +541,7 @@ async function getCustomThemes() {
     Global.Path.config,
     ...(await Array.fromAsync(
       Filesystem.up({
-        targets: [".mimocode"],
+        targets: [".mtycoder"],
         start: process.cwd(),
       }),
     )),
@@ -605,20 +607,20 @@ function generateSystem(colors: TerminalColors, mode: "dark" | "light"): ThemeJs
   const diffRemovedLineNumberBg = tint(diffContextBg, ansiColors.red, diffAlpha)
   const diffLineNumber = textMuted
 
-  const xiaomiOrange = RGBA.fromInts(255, 103, 0)
+  const mtycoderOrange = RGBA.fromInts(255, 103, 0)
 
   return {
     theme: {
-      // Primary colors using Xiaomi Orange
-      primary: xiaomiOrange,
-      secondary: xiaomiOrange,
-      accent: xiaomiOrange,
+      // Primary colors using Dechnic Orange
+      primary: mtycoderOrange,
+      secondary: mtycoderOrange,
+      accent: mtycoderOrange,
 
       // Status colors using ANSI
       error: ansiColors.red,
       warning: ansiColors.yellow,
-      success: xiaomiOrange,
-      info: xiaomiOrange,
+      success: mtycoderOrange,
+      info: mtycoderOrange,
 
       // Text colors
       text: fg,

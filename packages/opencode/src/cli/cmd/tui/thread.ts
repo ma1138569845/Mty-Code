@@ -10,12 +10,12 @@ import { errorMessage } from "@/util/error"
 import { withTimeout } from "@/util/timeout"
 import { withNetworkOptions, resolveNetworkOptionsNoConfig } from "@/cli/network"
 import { Filesystem } from "@/util"
-import type { GlobalEvent } from "@mimo-ai/sdk/v2"
+import type { GlobalEvent } from "@mty-coder/sdk/v2"
 import type { EventSource } from "./context/sdk"
 import { win32DisableProcessedInput, win32InstallCtrlCGuard } from "./win32"
 import { writeHeapSnapshot } from "v8"
 import { TuiConfig } from "./config/tui"
-import { MIMOCODE_PROCESS_ROLE, MIMOCODE_RUN_ID, ensureRunID, sanitizedProcessEnv } from "@/util/mimo-process"
+import { MTYCODER_PROCESS_ROLE, MTYCODER_RUN_ID, ensureRunID, sanitizedProcessEnv } from "@/util/mty-process"
 import { checkTrust, markTrusted } from "@/project/workspace-trust"
 import { t } from "@/cli/i18n"
 
@@ -126,12 +126,12 @@ async function promptWorkspaceTrust(directory: string, level: "untrusted" | "dan
 
 export const TuiThreadCommand = cmd({
   command: "$0 [project]",
-  describe: "start mimocode tui",
+  describe: "start mtycoder tui",
   builder: (yargs) =>
     withNetworkOptions(yargs)
       .positional("project", {
         type: "string",
-        describe: "path to start mimocode in",
+        describe: "path to start mtycoder in",
       })
       .option("model", {
         type: "string",
@@ -214,8 +214,8 @@ export const TuiThreadCommand = cmd({
       }
 
       const env = sanitizedProcessEnv({
-        [MIMOCODE_PROCESS_ROLE]: "worker",
-        [MIMOCODE_RUN_ID]: ensureRunID(),
+        [MTYCODER_PROCESS_ROLE]: "worker",
+        [MTYCODER_RUN_ID]: ensureRunID(),
       })
 
       const worker = new Worker(file, {

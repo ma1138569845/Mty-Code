@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>五子棋</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #e0e0e0;
+  }
+  .container {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  h1 {
+    font-size: 24px;
+    font-weight: 600;
+    background: linear-gradient(90deg, #f5af19, #f12711);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .status-area {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .turn-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .stone-preview {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.3);
+    transition: background 0.2s;
+  }
+  .stone-preview.black { background: radial-gradient(circle at 35% 35%, #666, #111); }
+  .stone-preview.white { background: radial-gradient(circle at 35% 35%, #fff, #ccc); }
+  .btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-reset {
+    background: rgba(255,255,255,0.1);
+    color: #e0e0e0;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .btn-reset:hover { background: rgba(255,255,255,0.2); }
+  .btn-undo {
+    background: rgba(255,255,255,0.06);
+    color: #aaa;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .btn-undo:hover { background: rgba(255,255,255,0.12); }
+  .btn-undo:disabled { opacity: 0.3; cursor: not-allowed; }
+  .board-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+  canvas {
+    border-radius: 12px;
+    display: block;
+    cursor: pointer;
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.3);
+  }
+  .winner-overlay {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    border-radius: 12px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .winner-overlay.show { display: flex; }
+  .winner-text {
+    font-size: 32px;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+  }
+  .winner-text span {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 8px;
+    border: 2px solid rgba(255,255,255,0.4);
+  }
+  .winner-text span.black { background: radial-gradient(circle at 35% 35%, #666, #111); }
+  .winner-text span.white { background: radial-gradient(circle at 35% 35%, #fff, #ccc); }
+  .winner-text .highlight { color: #f5af19; }
+  .btn-play-again {
+    padding: 10px 32px;
+    background: linear-gradient(135deg, #f5af19, #f12711);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .btn-play-again:hover { transform: scale(1.05); }
+  .footer {
+    margin-top: 16px;
+    text-align: center;
+    font-size: 13px;
+    color: rgba(255,255,255,0.3);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>♟ 五子棋</h1>
+    <div class="status-area">
+      <div class="turn-indicator">
+        <span id="turnLabel">黑棋走</span>
+        <div class="stone-preview black" id="turnStone"></div>
+      </div>
+      <button class="btn btn-undo" id="undoBtn" disabled>↩ 悔棋</button>
+      <button class="btn btn-reset" id="resetBtn">🔄 新一局</button>
+    </div>
+  </div>
+  <div class="board-wrapper">
+    <canvas id="board"></canvas>
+    <div class="winner-overlay" id="winnerOverlay">
+      <div class="winner-text" id="winnerText"></div>
+      <button class="btn-play-again" id="playAgainBtn">再来一局</button>
+    </div>
+  </div>
+  <div class="footer">点击棋盘落子 · 先连成五子者胜</div>
+</div>
+<script>
+  (() => {
+    const SIZE = 15
+    const CELL = 36
+    const PADDING = 28
+    const STONE_RADIUS = 15
+    const BOARD_PX = CELL * (SIZE - 1) + PADDING * 2
+
+    const canvas = document.getElementById('board')
+    const ctx = canvas.getContext('2d')
+    canvas.width = canvas.height = BOARD_PX
+
+    const turnLabel = document.getElementById('turnLabel')
+    const turnStone = document.getElementById('turnStone')
+    const undoBtn = document.getElementById('undoBtn')
+    const resetBtn = document.getElementById('resetBtn')
+    const winnerOverlay = document.getElementById('winnerOverlay')
+    const winnerText = document.getElementById('winnerText')
+    const playAgainBtn = document.getElementById('playAgainBtn')
+
+    // State
+    let board = Array.from({ length: SIZE }, () => Array(SIZE).fill(null))
+    let currentPlayer = 'black' // black first
+    let history = [] // [{r, c, player}]
+    let gameOver = false
+    let winLine = null // [{r,c}, ...] or null
+
+    function drawBoard() {
+      // Background
+      const grad = ctx.createRadialGradient(BOARD_PX/2, BOARD_PX/2, 0, BOARD_PX/2, BOARD_PX/2, BOARD_PX*0.7)
+      grad.addColorStop(0, '#dcb35c')
+      grad.addColorStop(1, '#c89b3c')
+      ctx.fillStyle = grad
+      ctx.fillRect(0, 0, BOARD_PX, BOARD_PX)
+
+      // Grid lines
+      ctx.strokeStyle = '#8b6b2a'
+      ctx.lineWidth = 1
+      for (let i = 0; i < SIZE; i++) {
+        const x = PADDING + i * CELL
+        const y = PADDING + i * CELL
+        ctx.beginPath(); ctx.moveTo(PADDING, y); ctx.lineTo(PADDING + (SIZE-1)*CELL, y); ctx.stroke()
+        ctx.beginPath(); ctx.moveTo(x, PADDING); ctx.lineTo(x, PADDING + (SIZE-1)*CELL); ctx.stroke()
+      }
+
+      // Star points (天元 + 四星)
+      const stars = [[7,7], [3,3], [3,11], [11,3], [11,11]]
+      ctx.fillStyle = '#8b6b2a'
+      for (const [r, c] of stars) {
+        ctx.beginPath()
+        ctx.arc(PADDING + c * CELL, PADDING + r * CELL, 4, 0, Math.PI * 2)
+        ctx.fill()
+      }
+
+      // Stones
+      for (let r = 0; r < SIZE; r++) {
+        for (let c = 0; c < SIZE; c++) {
+          if (!board[r][c]) continue
+          drawStone(r, c, board[r][c], false)
+        }
+      }
+
+      // Win line highlight
+      if (winLine) {
+        ctx.save()
+        for (const { r, c } of winLine) {
+          const x = PADDING + c * CELL
+          const y = PADDING + r * CELL
+          ctx.beginPath()
+          ctx.arc(x, y, STONE_RADIUS + 3, 0, Math.PI * 2)
+          ctx.strokeStyle = '#ff4444'
+          ctx.lineWidth = 3
+          ctx.stroke()
+        }
+        ctx.restore()
+      }
+    }
+
+    function drawStone(r, c, player, ghost) {
+      const x = PADDING + c * CELL
+      const y = PADDING + r * CELL
+      ctx.save()
+      ctx.globalAlpha = ghost ? 0.4 : 1
+
+      // Shadow
+      ctx.beginPath()
+      ctx.arc(x + 2, y + 2, STONE_RADIUS, 0, Math.PI * 2)
+      ctx.fillStyle = 'rgba(0,0,0,0.2)'
+      ctx.fill()
+
+      // Stone body
+      const g = ctx.createRadialGradient(x - 5, y - 5, 2, x, y, STONE_RADIUS)
+      if (player === 'black') {
+        g.addColorStop(0, '#555')
+        g.addColorStop(0.5, '#222')
+        g.addColorStop(1, '#000')
+      } else {
+        g.addColorStop(0, '#ffffff')
+        g.addColorStop(0.6, '#f0f0f0')
+        g.addColorStop(1, '#d0d0d0')
+      }
+      ctx.beginPath()
+      ctx.arc(x, y, STONE_RADIUS, 0, Math.PI * 2)
+      ctx.fillStyle = g
+      ctx.fill()
+
+      // Border
+      ctx.strokeStyle = player === 'black' ? 'rgba(0,0,0,0.6)' : 'rgba(0,0,0,0.15)'
+      ctx.lineWidth = 0.5
+      ctx.stroke()
+
+      ctx.restore()
+    }
+
+    function toBoardPos(e) {
+      const rect = canvas.getBoundingClientRect()
+      const scaleX = canvas.width / rect.width
+      const scaleY = canvas.height / rect.height
+      const mx = (e.clientX - rect.left) * scaleX
+      const my = (e.clientY - rect.top) * scaleY
+      const c = Math.round((mx - PADDING) / CELL)
+      const r = Math.round((my - PADDING) / CELL)
+      if (r < 0 || r >= SIZE || c < 0 || c >= SIZE) return null
+      // Check distance to intersection
+      const dx = mx - (PADDING + c * CELL)
+      const dy = my - (PADDING + r * CELL)
+      if (Math.sqrt(dx*dx + dy*dy) > CELL * 0.45) return null
+      return { r, c }
+    }
+
+    function checkWin(r, c, player) {
+      const dirs = [[1,0], [0,1], [1,1], [1,-1]]
+      for (const [dr, dc] of dirs) {
+        let cells = [{ r, c }]
+        // Forward
+        for (let i = 1; i < 5; i++) {
+          const nr = r + dr * i, nc = c + dc * i
+          if (nr < 0 || nr >= SIZE || nc < 0 || nc >= SIZE) break
+          if (board[nr][nc] !== player) break
+          cells.push({ r: nr, c: nc })
+        }
+        // Backward
+        for (let i = 1; i < 5; i++) {
+          const nr = r - dr * i, nc = c - dc * i
+          if (nr < 0 || nr >= SIZE || nc < 0 || nc >= SIZE) break
+          if (board[nr][nc] !== player) break
+          cells.push({ r: nr, c: nc })
+        }
+        if (cells.length >= 5) return cells
+      }
+      return null
+    }
+
+    function checkDraw() {
+      for (let r = 0; r < SIZE; r++)
+        for (let c = 0; c < SIZE; c++)
+          if (!board[r][c]) return false
+      return true
+    }
+
+    function placeStone(r, c) {
+      if (gameOver) return false
+      if (board[r][c]) return false
+
+      board[r][c] = currentPlayer
+      history.push({ r, c, player: currentPlayer })
+      undoBtn.disabled = false
+
+      // Check win
+      const line = checkWin(r, c, currentPlayer)
+      if (line) {
+        winLine = line
+        gameOver = true
+        drawBoard()
+        showWinner(currentPlayer)
+        return true
+      }
+
+      // Check draw
+      if (checkDraw()) {
+        gameOver = true
+        drawBoard()
+        showDraw()
+        return true
+      }
+
+      // Switch turn
+      currentPlayer = currentPlayer === 'black' ? 'white' : 'black'
+      updateTurnDisplay()
+      drawBoard()
+      return true
+    }
+
+    function undo() {
+      if (history.length === 0) return
+      if (gameOver) {
+        winnerOverlay.classList.remove('show')
+        gameOver = false
+        winLine = null
+      }
+      const last = history.pop()
+      board[last.r][last.c] = null
+      currentPlayer = last.player
+      updateTurnDisplay()
+      drawBoard()
+      undoBtn.disabled = history.length === 0
+    }
+
+    function resetGame() {
+      board = Array.from({ length: SIZE }, () => Array(SIZE).fill(null))
+      currentPlayer = 'black'
+      history = []
+      gameOver = false
+      winLine = null
+      winnerOverlay.classList.remove('show')
+      undoBtn.disabled = true
+      updateTurnDisplay()
+      drawBoard()
+    }
+
+    function updateTurnDisplay() {
+      turnLabel.textContent = currentPlayer === 'black' ? '黑棋走' : '白棋走'
+      turnStone.className = 'stone-preview ' + currentPlayer
+    }
+
+    function showWinner(player) {
+      const label = player === 'black' ? '黑棋' : '白棋'
+      const color = player === 'black' ? '#666' : '#f0f0f0'
+      winnerText.innerHTML = `<span class="${player}"></span> <span class="highlight">${label}</span> 获胜！`
+      winnerOverlay.classList.add('show')
+    }
+
+    function showDraw() {
+      winnerText.innerHTML = `🤝 平局！`
+      winnerOverlay.classList.add('show')
+    }
+
+    // Canvas hover ghost
+    let ghostPos = null
+    canvas.addEventListener('mousemove', (e) => {
+      const pos = toBoardPos(e)
+      if (!pos || gameOver || board[pos.r][pos.c]) {
+        if (ghostPos) { ghostPos = null; drawBoard() }
+        return
+      }
+      if (ghostPos && ghostPos.r === pos.r && ghostPos.c === pos.c) return
+      ghostPos = pos
+      drawBoard()
+      drawStone(pos.r, pos.c, currentPlayer, true)
+    })
+    canvas.addEventListener('mouseleave', () => {
+      if (ghostPos) { ghostPos = null; drawBoard() }
+    })
+
+    canvas.addEventListener('click', (e) => {
+      const pos = toBoardPos(e)
+      if (!pos) return
+      placeStone(pos.r, pos.c)
+    })
+
+    undoBtn.addEventListener('click', undo)
+    resetBtn.addEventListener('click', resetGame)
+    playAgainBtn.addEventListener('click', resetGame)
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'z' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault()
+        undo()
+      }
+      if (e.key === 'r' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault()
+        resetGame()
+      }
+    })
+
+    resetGame()
+  })()
+</script>
+</body>
+</html>

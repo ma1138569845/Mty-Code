@@ -5,10 +5,10 @@ import path from "path"
 import os from "os"
 import { Cause, Effect, Exit, Layer } from "effect"
 import { testEffect } from "../lib/effect"
-import { AppFileSystem } from "@mimo-ai/shared/filesystem"
-import { EffectFlock } from "@mimo-ai/shared/util/effect-flock"
-import { Global } from "@mimo-ai/shared/global"
-import { Hash } from "@mimo-ai/shared/util/hash"
+import { AppFileSystem } from "@mty-coder/shared/filesystem"
+import { EffectFlock } from "@mty-coder/shared/util/effect-flock"
+import { Global } from "@mty-coder/shared/global"
+import { Hash } from "@mty-coder/shared/util/hash"
 
 function lock(dir: string, key: string) {
   return path.join(dir, Hash.fast(key) + ".lock")

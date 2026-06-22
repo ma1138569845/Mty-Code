@@ -33,9 +33,9 @@ export const Event = {
 export const PRUNE_MINIMUM = 20_000
 export const PRUNE_PROTECT = 40_000
 const PRUNE_PROTECTED_TOOLS = ["skill"]
-const DEFAULT_TAIL_TURNS = 2
-const MIN_PRESERVE_RECENT_TOKENS = 2_000
-const MAX_PRESERVE_RECENT_TOKENS = 8_000
+const DEFAULT_TAIL_TURNS = 3
+const MIN_PRESERVE_RECENT_TOKENS = 4_000
+const MAX_PRESERVE_RECENT_TOKENS = 16_000
 type Turn = {
   start: number
   end: number

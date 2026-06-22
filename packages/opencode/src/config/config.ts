@@ -6,7 +6,7 @@ import z from "zod"
 import { mergeDeep, pipe } from "remeda"
 import { Global } from "../global"
 import fsNode from "fs/promises"
-import { NamedError } from "@mimo-ai/shared/util/error"
+import { NamedError } from "@mty-coder/shared/util/error"
 import { Flag } from "../flag/flag"
 import { Auth } from "../auth"
 import { Env } from "../env"
@@ -19,10 +19,10 @@ import { Event } from "../server/event"
 import { Account } from "@/account/account"
 import { isRecord } from "@/util/record"
 import type { ConsoleState } from "./console-state"
-import { AppFileSystem } from "@mimo-ai/shared/filesystem"
+import { AppFileSystem } from "@mty-coder/shared/filesystem"
 import { InstanceState } from "@/effect"
 import { Context, Duration, Effect, Exit, Fiber, Layer, Option, Schema } from "effect"
-import { EffectFlock } from "@mimo-ai/shared/util/effect-flock"
+import { EffectFlock } from "@mty-coder/shared/util/effect-flock"
 import { InstanceRef } from "@/effect/instance-ref"
 import { zod, ZodOverride } from "@/util/effect-zod"
 import { ConfigAgent } from "./agent"
@@ -63,7 +63,7 @@ function normalizeLoadedConfig(data: unknown, source: string) {
   delete copy.theme
   delete copy.keybinds
   delete copy.tui
-  log.warn("tui keys in mimocode config are deprecated; move them to tui.json", { path: source })
+  log.warn("tui keys in mtycoder config are deprecated; move them to tui.json", { path: source })
   return copy
 }
 
@@ -98,10 +98,10 @@ const InfoSchema = Schema.Struct({
   }),
   logLevel: Schema.optional(LogLevelRef).annotate({ description: "Log level" }),
   server: Schema.optional(ConfigServer.Server).annotate({
-    description: "Server configuration for mimo serve and web commands",
+    description: "Server configuration for mty serve and web commands",
   }),
   command: Schema.optional(Schema.Record(Schema.String, ConfigCommand.Info)).annotate({
-    description: "Command configuration, see https://opencode.ai/docs/commands",
+    description: "Command configuration, see https://mtycoder.example.com/docs/commands",
   }),
   skills: Schema.optional(ConfigSkills.Info).annotate({ description: "Additional skill folder paths" }),
   watcher: Schema.optional(
@@ -186,7 +186,7 @@ const InfoSchema = Schema.Struct({
       }),
       [Schema.Record(Schema.String, AgentRef)],
     ),
-  ).annotate({ description: "Agent configuration, see https://opencode.ai/docs/agents" }),
+  ).annotate({ description: "Agent configuration, see https://mtycoder.example.com/docs/agents" }),
   provider: Schema.optional(Schema.Record(Schema.String, ConfigProvider.Info)).annotate({
     description: "Custom provider configurations and model overrides",
   }),
@@ -324,7 +324,7 @@ const InfoSchema = Schema.Struct({
     Schema.Struct({
       cc_index: Schema.optional(Schema.Boolean).annotate({
         description:
-          "Index Claude Code memory (~/.claude/projects/<slug>/memory) and expose under scope='cc'. Default: false. Note: when enabled, every mimocode agent (build/explore/subagents) can search these memories via the builtin `memory` tool — including CC's `type: user` (your role/preferences) and `type: feedback` (your guidance) categories. CC originally writes them for future CC sessions; flipping this on widens the consumer set to mimocode agents on the same machine. Leave disabled (default) if you don't want personal context recallable from a prompt-injection-vulnerable agent.",
+          "Index Claude Code memory (~/.claude/projects/<slug>/memory) and expose under scope='cc'. Default: false. Note: when enabled, every mtycoder agent (build/explore/subagents) can search these memories via the builtin `memory` tool — including CC's `type: user` (your role/preferences) and `type: feedback` (your guidance) categories. CC originally writes them for future CC sessions; flipping this on widens the consumer set to mtycoder agents on the same machine. Leave disabled (default) if you don't want personal context recallable from a prompt-injection-vulnerable agent.",
       }),
     }),
   ),
@@ -357,11 +357,11 @@ const InfoSchema = Schema.Struct({
     Schema.Struct({
       asr_model: Schema.optional(ConfigModelID).annotate({
         description:
-          "Model to use for voice ASR transcription in provider/model format. Defaults to xiaomi/mimo-v2.5-asr.",
+          "Model to use for voice ASR transcription in provider/model format. Defaults to mty-v2.5-asr.",
       }),
       control_model: Schema.optional(ConfigModelID).annotate({
         description:
-          "Model to use for voice control (multimodal) in provider/model format. Defaults to xiaomi/mimo-v2.5.",
+          "Model to use for voice control (multimodal) in provider/model format. Defaults to mty-v2.5.",
       }),
     }),
   ).annotate({ description: "Voice input provider and model configuration." }),
@@ -474,7 +474,7 @@ export interface Interface {
 export class Service extends Context.Service<Service, Interface>()("@opencode/Config") {}
 
 function globalConfigFile() {
-  const candidates = ["mimocode.jsonc", "mimocode.json", "config.json"].map((file) =>
+  const candidates = ["mtycoder.jsonc", "mtycoder.json", "config.json"].map((file) =>
     path.join(Global.Path.config, file),
   )
   for (const file of candidates) {
@@ -549,8 +549,8 @@ export const layer = Layer.effect(
 
       yield* Effect.promise(() => resolveLoadedPlugins(data, options.path))
       if (!data.$schema) {
-        data.$schema = "https://opencode.ai/config.json"
-        const updated = text.replace(/^\s*\{/, '{\n  "$schema": "https://opencode.ai/config.json",')
+        data.$schema = "https://mtycoder.example.com/config.json"
+        const updated = text.replace(/^\s*\{/, '{\n  "$schema": "https://mtycoder.example.com/config.json",')
         yield* fs.writeFileString(options.path, updated).pipe(Effect.catch(() => Effect.void))
       }
       return data
@@ -567,8 +567,8 @@ export const layer = Layer.effect(
       let result: Info = pipe(
         {},
         mergeDeep(yield* loadFile(path.join(Global.Path.config, "config.json"))),
-        mergeDeep(yield* loadFile(path.join(Global.Path.config, "mimocode.json"))),
-        mergeDeep(yield* loadFile(path.join(Global.Path.config, "mimocode.jsonc"))),
+        mergeDeep(yield* loadFile(path.join(Global.Path.config, "mtycoder.json"))),
+        mergeDeep(yield* loadFile(path.join(Global.Path.config, "mtycoder.jsonc"))),
       )
 
       const legacy = path.join(Global.Path.config, "config")
@@ -578,7 +578,7 @@ export const layer = Layer.effect(
             .then(async (mod) => {
               const { provider, model, ...rest } = mod.default
               if (provider && model) result.model = `${provider}/${model}`
-              result["$schema"] = "https://opencode.ai/config.json"
+              result["$schema"] = "https://mtycoder.example.com/config.json"
               result = mergeDeep(result, rest)
               await fsNode.writeFile(path.join(Global.Path.config, "config.json"), JSON.stringify(result, null, 2))
               await fsNode.unlink(legacy)
@@ -632,7 +632,7 @@ export const layer = Layer.effect(
 
         const pluginScopeForSource = Effect.fnUntraced(function* (source: string) {
           if (source.startsWith("http://") || source.startsWith("https://")) return "global"
-          if (source === "MIMOCODE_CONFIG_CONTENT") return "local"
+          if (source === "MTYCODER_CONFIG_CONTENT") return "local"
           if (yield* InstanceRef.use((ctx) => Effect.succeed(Instance.containsPath(source, ctx)))) return "local"
           return "global"
         })
@@ -728,7 +728,7 @@ export const layer = Layer.effect(
             }
             const wellknown = (yield* Effect.promise(() => response.json())) as { config?: Record<string, unknown> }
             const remoteConfig = wellknown.config ?? {}
-            if (!remoteConfig.$schema) remoteConfig.$schema = "https://opencode.ai/config.json"
+            if (!remoteConfig.$schema) remoteConfig.$schema = "https://mtycoder.example.com/config.json"
             const source = `${url}/.well-known/opencode`
             const next = yield* loadConfig(JSON.stringify(remoteConfig), {
               dir: path.dirname(source),
@@ -742,13 +742,13 @@ export const layer = Layer.effect(
         const global = yield* getGlobal()
         yield* merge(Global.Path.config, global, "global")
 
-        if (Flag.MIMOCODE_CONFIG) {
-          yield* merge(Flag.MIMOCODE_CONFIG, yield* loadFile(Flag.MIMOCODE_CONFIG))
-          log.debug("loaded custom config", { path: Flag.MIMOCODE_CONFIG })
+        if (Flag.MTYCODER_CONFIG) {
+          yield* merge(Flag.MTYCODER_CONFIG, yield* loadFile(Flag.MTYCODER_CONFIG))
+          log.debug("loaded custom config", { path: Flag.MTYCODER_CONFIG })
         }
 
-        if (!Flag.MIMOCODE_DISABLE_PROJECT_CONFIG) {
-          for (const file of yield* ConfigPaths.files("mimocode", ctx.directory, ctx.worktree).pipe(Effect.orDie)) {
+        if (!Flag.MTYCODER_DISABLE_PROJECT_CONFIG) {
+          for (const file of yield* ConfigPaths.files("mtycoder", ctx.directory, ctx.worktree).pipe(Effect.orDie)) {
             yield* merge(file, yield* loadFile(file), "local")
           }
         }
@@ -759,20 +759,20 @@ export const layer = Layer.effect(
 
         const directories = yield* ConfigPaths.directories(ctx.directory, ctx.worktree)
 
-        if (Flag.MIMOCODE_CONFIG_DIR) {
-          log.debug("loading config from MIMOCODE_CONFIG_DIR", { path: Flag.MIMOCODE_CONFIG_DIR })
+        if (Flag.MTYCODER_CONFIG_DIR) {
+          log.debug("loading config from MTYCODER_CONFIG_DIR", { path: Flag.MTYCODER_CONFIG_DIR })
         }
 
         const deps: Fiber.Fiber<void, never>[] = []
 
-        // Load Claude Code commands first so .mimocode commands override on name collision.
+        // Load Claude Code commands first so .mtycoder commands override on name collision.
         for (const dir of yield* ConfigPaths.claudeCommandDirectories(ctx.directory, ctx.worktree)) {
           result.command = mergeDeep(result.command ?? {}, yield* Effect.promise(() => ConfigCommand.load(dir)))
         }
 
         for (const dir of directories) {
-          if (dir.endsWith(".mimocode") || dir === Flag.MIMOCODE_CONFIG_DIR) {
-            for (const file of ["mimocode.json", "mimocode.jsonc"]) {
+          if (dir.endsWith(".mtycoder") || dir === Flag.MTYCODER_CONFIG_DIR) {
+            for (const file of ["mtycoder.json", "mtycoder.jsonc"]) {
               const source = path.join(dir, file)
               log.debug(`loading config from ${source}`)
               yield* merge(source, yield* loadFile(source))
@@ -788,7 +788,7 @@ export const layer = Layer.effect(
             .install(dir, {
               add: [
                 {
-                  name: "@mimo-ai/plugin",
+                  name: "@mty-coder/plugin",
                   version: InstallationLocal ? undefined : InstallationVersion,
                 },
               ],
@@ -810,20 +810,20 @@ export const layer = Layer.effect(
           result.command = mergeDeep(result.command ?? {}, yield* Effect.promise(() => ConfigCommand.load(dir)))
           result.agent = mergeDeep(result.agent ?? {}, yield* Effect.promise(() => ConfigAgent.load(dir)))
           result.agent = mergeDeep(result.agent ?? {}, yield* Effect.promise(() => ConfigAgent.loadMode(dir)))
-          // Auto-discovered plugins under `.mimocode/plugin(s)` are already local files, so ConfigPlugin.load
+          // Auto-discovered plugins under `.mtycoder/plugin(s)` are already local files, so ConfigPlugin.load
           // returns normalized Specs and we only need to attach origin metadata here.
           const list = yield* Effect.promise(() => ConfigPlugin.load(dir))
           yield* mergePluginOrigins(dir, list)
         }
 
-        if (process.env.MIMOCODE_CONFIG_CONTENT) {
-          const source = "MIMOCODE_CONFIG_CONTENT"
-          const next = yield* loadConfig(process.env.MIMOCODE_CONFIG_CONTENT, {
+        if (process.env.MTYCODER_CONFIG_CONTENT) {
+          const source = "MTYCODER_CONFIG_CONTENT"
+          const next = yield* loadConfig(process.env.MTYCODER_CONFIG_CONTENT, {
             dir: ctx.directory,
             source,
           })
           yield* merge(source, next, "local")
-          log.debug("loaded custom config from MIMOCODE_CONFIG_CONTENT")
+          log.debug("loaded custom config from MTYCODER_CONFIG_CONTENT")
         }
 
         const activeAccount = Option.getOrUndefined(
@@ -839,8 +839,8 @@ export const layer = Layer.effect(
               { concurrency: 2 },
             )
             if (Option.isSome(tokenOpt)) {
-              process.env["MIMOCODE_CONSOLE_TOKEN"] = tokenOpt.value
-              yield* env.set("MIMOCODE_CONSOLE_TOKEN", tokenOpt.value)
+              process.env["MTYCODER_CONSOLE_TOKEN"] = tokenOpt.value
+              yield* env.set("MTYCODER_CONSOLE_TOKEN", tokenOpt.value)
             }
 
             if (Option.isSome(configOpt)) {
@@ -867,7 +867,7 @@ export const layer = Layer.effect(
 
         const managedDir = ConfigManaged.managedConfigDir()
         if (existsSync(managedDir)) {
-          for (const file of ["mimocode.json", "mimocode.jsonc"]) {
+          for (const file of ["mtycoder.json", "mtycoder.jsonc"]) {
             const source = path.join(managedDir, file)
             yield* merge(source, yield* loadFile(source), "global")
           }
@@ -884,7 +884,7 @@ export const layer = Layer.effect(
           mergeMcpOrigins(managed.source, next, "opencode")
         }
 
-        if (!Flag.MIMOCODE_DISABLE_CLAUDE_CODE_MCP) {
+        if (!Flag.MTYCODER_DISABLE_CLAUDE_CODE_MCP) {
           yield* mergeClaudeMcp(path.join(Global.Path.home, ".claude.json"))
           yield* mergeClaudeMcp(path.join(ctx.directory, ".claude.json"))
         }
@@ -898,8 +898,8 @@ export const layer = Layer.effect(
           })
         }
 
-        if (Flag.MIMOCODE_PERMISSION) {
-          result.permission = mergeDeep(result.permission ?? {}, JSON.parse(Flag.MIMOCODE_PERMISSION))
+        if (Flag.MTYCODER_PERMISSION) {
+          result.permission = mergeDeep(result.permission ?? {}, JSON.parse(Flag.MTYCODER_PERMISSION))
         }
 
         if (result.tools) {
@@ -921,10 +921,10 @@ export const layer = Layer.effect(
           result.share = "auto"
         }
 
-        if (Flag.MIMOCODE_DISABLE_AUTOCOMPACT) {
+        if (Flag.MTYCODER_DISABLE_AUTOCOMPACT) {
           result.compaction = { ...result.compaction, auto: false }
         }
-        if (Flag.MIMOCODE_DISABLE_PRUNE) {
+        if (Flag.MTYCODER_DISABLE_PRUNE) {
           result.compaction = { ...result.compaction, prune: false }
         }
 

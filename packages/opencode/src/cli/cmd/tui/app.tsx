@@ -18,7 +18,7 @@ import { win32DisableProcessedInput, win32InstallCtrlCGuard } from "./win32"
 import { Flag } from "@/flag/flag"
 import semver from "semver"
 import { DialogProvider, useDialog } from "@tui/ui/dialog"
-import { DialogMimoLogin } from "@tui/component/dialog-mimo-login"
+import { DialogMtyLogin } from "@tui/component/dialog-mty-login"
 import { ErrorComponent } from "@tui/component/error-component"
 import { PluginRouteMissing } from "@tui/component/plugin-route-missing"
 import { ProjectProvider } from "@tui/context/project"
@@ -35,6 +35,7 @@ import { DialogThemeList } from "@tui/component/dialog-theme-list"
 import { DialogImageList } from "@tui/component/dialog-image-list"
 import { DialogLogoDesign } from "@tui/component/dialog-logo-design"
 import { DialogHelp } from "./ui/dialog-help"
+import { DialogOnboarding } from "./component/dialog-onboarding"
 import { CommandProvider, useCommandDialog } from "@tui/component/dialog-command"
 import { DialogAgent } from "@tui/component/dialog-agent"
 import { DialogSessionList } from "@tui/component/dialog-session-list"
@@ -73,7 +74,7 @@ import type { EventSource } from "./context/sdk"
 import { DialogVariant } from "./component/dialog-variant"
 
 function rendererConfig(_config: TuiConfig.Info, plainTerminal: boolean): CliRendererConfig {
-  const mouseEnabled = !plainTerminal && !Flag.MIMOCODE_DISABLE_MOUSE && (_config.mouse ?? true)
+  const mouseEnabled = !plainTerminal && !Flag.MTYCODER_DISABLE_MOUSE && (_config.mouse ?? true)
 
   return {
     externalOutputMode: "passthrough",
@@ -279,7 +280,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
     })
 
   useKeyboard((evt) => {
-    if (!Flag.MIMOCODE_EXPERIMENTAL_DISABLE_COPY_ON_SELECT) return
+    if (!Flag.MTYCODER_EXPERIMENTAL_DISABLE_COPY_ON_SELECT) return
     const sel = renderer.getSelection()
     if (!sel) return
 
@@ -327,17 +328,17 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
 
   // Update terminal window title based on current route and session
   createEffect(() => {
-    if (!terminalTitleEnabled() || Flag.MIMOCODE_DISABLE_TERMINAL_TITLE) return
+    if (!terminalTitleEnabled() || Flag.MTYCODER_DISABLE_TERMINAL_TITLE) return
 
     if (route.data.type === "home") {
-      renderer.setTerminalTitle("MiMoCode")
+      renderer.setTerminalTitle("MtyCoder")
       return
     }
 
     if (route.data.type === "session") {
       const session = sync.session.get(route.data.sessionID)
       if (!session || SessionApi.isDefaultTitle(session.title)) {
-        renderer.setTerminalTitle("MiMoCode")
+        renderer.setTerminalTitle("MtyCoder")
         return
       }
 
@@ -416,6 +417,20 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
 
   const connected = useConnected()
 
+  // First-run onboarding: show welcome dialog when no provider is connected
+  // and no sessions exist (indicating a fresh install)
+  let onboardingShown = false
+  createEffect(() => {
+    if (onboardingShown) return
+    if (sync.status !== "complete") return
+    if (connected()) return
+    if (sync.data.session.length > 0) return
+    // Only show on home route (not when --prompt or --session is passed)
+    if (args.prompt || args.sessionID) return
+    onboardingShown = true
+    dialog.replace(() => <DialogOnboarding />)
+  })
+
   // Seed never-ask from the launch flag once connected (the server starts with
   // it off; this mirrors --never-ask to the question service).
   let seededNeverAsk = false
@@ -444,7 +459,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       title: t("tui.command.workflow.list.title"),
       value: "workflow.list",
       category: "session",
-      enabled: Flag.MIMOCODE_EXPERIMENTAL_WORKFLOW_TOOL,
+      enabled: Flag.MTYCODER_EXPERIMENTAL_WORKFLOW_TOOL,
       slash: {
         name: "workflows",
       },
@@ -613,7 +628,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
         name: "login",
       },
       onSelect: () => {
-        dialog.replace(() => <DialogMimoLogin />)
+        dialog.replace(() => <DialogMtyLogin />)
       },
       category: "provider",
     },
@@ -625,7 +640,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
         name: "connect",
       },
       onSelect: () => {
-        dialog.replace(() => <DialogMimoLogin />)
+        dialog.replace(() => <DialogMtyLogin />)
       },
       category: "provider",
     },
@@ -636,7 +651,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
         name: "logout",
       },
       onSelect: async () => {
-        await sdk.client.auth.remove({ providerID: "xiaomi" })
+        await sdk.client.auth.remove({ providerID: "mtycoder" })
         await sdk.client.instance.dispose()
         await sync.bootstrap()
         toast.show({ message: t("tui.command.logout.toast"), variant: "info" })
@@ -772,7 +787,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
         aliases: ["docs"],
       },
       onSelect: () => {
-        open("https://mimo.xiaomi.com/coder/docs").catch(() => {})
+        open("https://mtycoder.example.com/coder/docs").catch(() => {})
         dialog.clear()
       },
       category: "system",
@@ -1099,7 +1114,7 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
         // When copy-on-mousedown is enabled, prefer copying an active selection;
         // fall through to paste when there is nothing selected.
         if (
-          Flag.MIMOCODE_EXPERIMENTAL_DISABLE_COPY_ON_SELECT &&
+          Flag.MTYCODER_EXPERIMENTAL_DISABLE_COPY_ON_SELECT &&
           Selection.copy(renderer, toast, t("tui.toast.copied_to_clipboard"))
         ) {
           evt.preventDefault()
@@ -1112,12 +1127,12 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
         evt.stopPropagation()
       }}
       onMouseUp={
-        Flag.MIMOCODE_EXPERIMENTAL_DISABLE_COPY_ON_SELECT
+        Flag.MTYCODER_EXPERIMENTAL_DISABLE_COPY_ON_SELECT
           ? undefined
           : () => Selection.copy(renderer, toast, t("tui.toast.copied_to_clipboard"))
       }
     >
-      <Show when={Flag.MIMOCODE_SHOW_TTFD}>
+      <Show when={Flag.MTYCODER_SHOW_TTFD}>
         <TimeToFirstDraw />
       </Show>
       <Show when={ready()}>

@@ -3,13 +3,13 @@ import { Effect } from "effect"
 import { HttpClient } from "effect/unstable/http"
 import * as Tool from "../tool"
 import * as McpExa from "../mcp-exa"
-import * as MimoWebsearch from "./mimo"
+import * as MtyWebsearch from "./mty"
 import { Auth } from "@/auth"
 import { Provider } from "@/provider"
 import DESCRIPTION from "./websearch.txt"
 
 const WEBFETCH_FALLBACK =
-  "Web search unavailable. Use `webfetch` with a relevant URL instead, or enable the Web Search plugin at https://platform.xiaomimimo.com/console/plugin."
+  "Web search unavailable. Use `webfetch` with a relevant URL instead, or enable the Web Search plugin at https://platform.mtycoder.example.com/console/plugin."
 const MAX_TIMEOUT = 120 * 1000 // 2 minutes
 
 const Parameters = z.object({
@@ -63,17 +63,17 @@ export const WebSearchTool = Tool.define(
           const timeout = params.timeout === undefined ? undefined : Math.min(params.timeout * 1000, MAX_TIMEOUT)
 
           const result =
-            model?.providerID === "xiaomi"
+            model?.providerID === "mtycoder"
               ? yield* Effect.catchCause(
                   Effect.gen(function* () {
-                    const info = yield* auth.get("xiaomi")
+                    const info = yield* auth.get("mtycoder")
                     if (!info || info.type !== "api") return undefined
-                    return yield* MimoWebsearch.call(
+                    return yield* MtyWebsearch.call(
                       http,
                       model.api.url,
                       info.key,
                       params.query,
-                      "mimo-v2.5",
+                      "mty-v2.5",
                       timeout ?? "30 seconds",
                     )
                   }),

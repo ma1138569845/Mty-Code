@@ -1,4 +1,4 @@
-import type { TuiPlugin, TuiPluginModule } from "@mimo-ai/plugin/tui"
+import type { TuiPlugin, TuiPluginModule } from "@mty-coder/plugin/tui"
 import { createMemo, Show } from "solid-js"
 import { Tips } from "./tips-view"
 import { useLanguage } from "@tui/context/language"
@@ -38,8 +38,9 @@ const tui: TuiPlugin = async (api) => {
     slots: {
       home_bottom() {
         const hidden = createMemo(() => api.kv.get("tips_hidden", false))
-        const first = createMemo(() => api.state.session.count() === 0)
-        const show = createMemo(() => !first() && !hidden())
+        const isFirstRun = createMemo(() => api.state.session.count() === 0)
+        // 新用户也显示 tips（特别是 connect/login 相关的高优先级提示）
+        const show = createMemo(() => !hidden())
         return <View show={show()} />
       },
     },

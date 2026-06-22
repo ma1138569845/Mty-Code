@@ -29,7 +29,7 @@ export const dict = {
   "tui.home.placeholder.example.todo": "Corriger un TODO dans le code",
   "tui.home.placeholder.example.stack": "Quelle est la stack technique de ce projet ?",
   "tui.home.placeholder.example.tests": "Réparer les tests cassés",
-  "tui.home.agreement.prefix": "En utilisant MiMoCode, vous acceptez nos ",
+  "tui.home.agreement.prefix": "En utilisant MtyCoder, vous acceptez nos ",
   "tui.home.agreement.terms": "Conditions d'utilisation",
   "tui.home.agreement.separator": " et notre ",
   "tui.home.agreement.privacy": "Politique de confidentialité",
@@ -60,7 +60,7 @@ export const dict = {
   "tui.tips.undo": "Utilisez {highlight}/undo{/highlight} pour annuler le dernier message et ses modifications",
   "tui.tips.redo": "Utilisez {highlight}/redo{/highlight} pour rétablir des messages et modifications précédemment annulés",
   "tui.tips.share":
-    "Exécutez {highlight}/share{/highlight} pour créer un lien public vers votre conversation sur opencode.ai",
+    "Exécutez {highlight}/share{/highlight} pour créer un lien public vers votre conversation sur mtycoder.example.com",
   "tui.tips.drag_drop": "Glissez-déposez des images ou PDF dans le terminal pour les ajouter au contexte",
   "tui.tips.paste_image":
     "Appuyez sur {highlight}Ctrl+V{/highlight} pour coller des images du presse-papiers dans l'invite",
@@ -109,9 +109,9 @@ export const dict = {
   "tui.tips.cycle_sessions":
     "Appuyez sur {highlight}Ctrl+X Right/Left{/highlight} pour parcourir les sessions parent et enfant",
   "tui.tips.config_files":
-    "Créez {highlight}mimocode.json{/highlight} pour la configuration serveur et {highlight}tui.json{/highlight} pour le TUI",
+    "Créez {highlight}mtycoder.json{/highlight} pour la configuration serveur et {highlight}tui.json{/highlight} pour le TUI",
   "tui.tips.global_config":
-    "Placez les paramètres TUI dans {highlight}~/.config/mimocode/tui.json{/highlight} comme configuration globale",
+    "Placez les paramètres TUI dans {highlight}~/.config/mtycoder/tui.json{/highlight} comme configuration globale",
   "tui.tips.schema": "Ajoutez {highlight}$schema{/highlight} à votre config pour l'auto-complétion dans l'éditeur",
   "tui.tips.default_model": "Configurez {highlight}model{/highlight} dans la config pour définir le modèle par défaut",
   "tui.tips.keybinds":
@@ -121,15 +121,15 @@ export const dict = {
   "tui.tips.mcp_config":
     "Configurez les serveurs MCP locaux ou distants dans la section {highlight}mcp{/highlight}",
   "tui.tips.mcp_oauth":
-    "MiMoCode gère automatiquement OAuth pour les serveurs MCP distants nécessitant une authentification",
+    "MtyCoder gère automatiquement OAuth pour les serveurs MCP distants nécessitant une authentification",
   "tui.tips.custom_command":
-    "Ajoutez des fichiers {highlight}.md{/highlight} dans {highlight}.mimocode/command/{/highlight} pour définir des invites personnalisées réutilisables",
+    "Ajoutez des fichiers {highlight}.md{/highlight} dans {highlight}.mtycoder/command/{/highlight} pour définir des invites personnalisées réutilisables",
   "tui.tips.command_args":
     "Utilisez {highlight}$ARGUMENTS{/highlight}, {highlight}$1{/highlight}, {highlight}$2{/highlight} dans les commandes pour des entrées dynamiques",
   "tui.tips.command_backticks":
     "Utilisez des backticks dans les commandes pour injecter la sortie shell (ex. {highlight}`git status`{/highlight})",
   "tui.tips.custom_agent":
-    "Ajoutez des fichiers {highlight}.md{/highlight} dans {highlight}.mimocode/agent/{/highlight} pour des personas IA spécialisés",
+    "Ajoutez des fichiers {highlight}.md{/highlight} dans {highlight}.mtycoder/agent/{/highlight} pour des personas IA spécialisés",
   "tui.tips.agent_perms":
     "Configurez par agent les permissions des outils {highlight}edit{/highlight}, {highlight}bash{/highlight} et {highlight}webfetch{/highlight}",
   "tui.tips.bash_allow":
@@ -138,45 +138,45 @@ export const dict = {
     'Définissez {highlight}"rm -rf *": "deny"{/highlight} pour bloquer les commandes destructrices',
   "tui.tips.bash_ask":
     'Configurez {highlight}"git push": "ask"{/highlight} pour exiger une confirmation avant le push',
-  "tui.tips.formatter": "MiMoCode formate automatiquement les fichiers avec prettier, gofmt, ruff, etc.",
+  "tui.tips.formatter": "MtyCoder formate automatiquement les fichiers avec prettier, gofmt, ruff, etc.",
   "tui.tips.disable_formatter":
     'Définissez {highlight}"formatter": false{/highlight} dans la config pour désactiver le formatage automatique',
   "tui.tips.custom_formatter":
     "Définissez des commandes de formatage personnalisées par extension de fichier dans la config",
-  "tui.tips.lsp": "MiMoCode utilise des serveurs LSP pour une analyse de code intelligente",
+  "tui.tips.lsp": "MtyCoder utilise des serveurs LSP pour une analyse de code intelligente",
   "tui.tips.custom_tool":
-    "Créez des fichiers {highlight}.ts{/highlight} dans {highlight}.mimocode/tools/{/highlight} pour définir de nouveaux outils LLM",
+    "Créez des fichiers {highlight}.ts{/highlight} dans {highlight}.mtycoder/tools/{/highlight} pour définir de nouveaux outils LLM",
   "tui.tips.tool_scripts": "Les définitions d'outils peuvent invoquer des scripts en Python, Go, etc.",
   "tui.tips.plugins":
-    "Ajoutez des fichiers {highlight}.ts{/highlight} dans {highlight}.mimocode/plugin/{/highlight} pour des hooks d'événements",
+    "Ajoutez des fichiers {highlight}.ts{/highlight} dans {highlight}.mtycoder/plugin/{/highlight} pour des hooks d'événements",
   "tui.tips.plugin_notify":
     "Utilisez des plugins pour envoyer des notifications système à la fin des sessions",
   "tui.tips.plugin_protect":
-    "Créez un plugin pour empêcher MiMoCode de lire des fichiers sensibles",
-  "tui.tips.run": "Utilisez {highlight}mimo run{/highlight} pour des scripts non interactifs",
-  "tui.tips.continue": "Utilisez {highlight}mimo --continue{/highlight} pour reprendre la dernière session",
+    "Créez un plugin pour empêcher MtyCoder de lire des fichiers sensibles",
+  "tui.tips.run": "Utilisez {highlight}mty run{/highlight} pour des scripts non interactifs",
+  "tui.tips.continue": "Utilisez {highlight}mty --continue{/highlight} pour reprendre la dernière session",
   "tui.tips.attach_cli":
-    "Utilisez {highlight}mimo run -f file.ts{/highlight} pour joindre des fichiers via la CLI",
+    "Utilisez {highlight}mty run -f file.ts{/highlight} pour joindre des fichiers via la CLI",
   "tui.tips.format_json":
     "Utilisez {highlight}--format json{/highlight} pour une sortie lisible par machine dans les scripts",
-  "tui.tips.serve": "Exécutez {highlight}mimo serve{/highlight} pour exposer l'API MiMoCode en mode headless",
+  "tui.tips.serve": "Exécutez {highlight}mty serve{/highlight} pour exposer l'API MtyCoder en mode headless",
   "tui.tips.attach_server":
-    "Utilisez {highlight}mimo run --attach{/highlight} pour vous connecter à un serveur en cours",
-  "tui.tips.upgrade": "Exécutez {highlight}mimo upgrade{/highlight} pour passer à la dernière version",
+    "Utilisez {highlight}mty run --attach{/highlight} pour vous connecter à un serveur en cours",
+  "tui.tips.upgrade": "Exécutez {highlight}mty upgrade{/highlight} pour passer à la dernière version",
   "tui.tips.auth_list":
-    "Exécutez {highlight}mimo auth list{/highlight} pour voir tous les fournisseurs configurés",
+    "Exécutez {highlight}mty auth list{/highlight} pour voir tous les fournisseurs configurés",
   "tui.tips.agent_create":
-    "Exécutez {highlight}mimo agent create{/highlight} pour créer un agent en mode guidé",
+    "Exécutez {highlight}mty agent create{/highlight} pour créer un agent en mode guidé",
   "tui.tips.github_trigger":
     "Utilisez {highlight}/opencode{/highlight} dans les issues/PR GitHub pour déclencher des actions IA",
   "tui.tips.github_install":
-    "Exécutez {highlight}mimo github install{/highlight} pour configurer le workflow GitHub",
+    "Exécutez {highlight}mty github install{/highlight} pour configurer le workflow GitHub",
   "tui.tips.github_oc":
     "Commentez {highlight}/oc{/highlight} sur une ligne de PR pour une revue ciblée",
   "tui.tips.theme_system":
     'Utilisez {highlight}"theme": "system"{/highlight} pour suivre les couleurs du terminal',
   "tui.tips.theme_files":
-    "Créez des fichiers de thème JSON dans le dossier {highlight}.mimocode/themes/{/highlight}",
+    "Créez des fichiers de thème JSON dans le dossier {highlight}.mtycoder/themes/{/highlight}",
   "tui.tips.theme_variants": "Les thèmes prennent en charge des variantes claires/sombres pour les deux modes",
   "tui.tips.theme_ansi": "Référencez les couleurs ANSI 0-255 dans des thèmes personnalisés",
   "tui.tips.env_var":
@@ -206,7 +206,7 @@ export const dict = {
   "tui.tips.external_dir":
     "La permission {highlight}external_directory{/highlight} protège les fichiers en dehors du projet",
   "tui.tips.debug_config":
-    "Exécutez {highlight}mimo debug config{/highlight} pour diagnostiquer la configuration",
+    "Exécutez {highlight}mty debug config{/highlight} pour diagnostiquer la configuration",
   "tui.tips.print_logs":
     "Utilisez l'option {highlight}--print-logs{/highlight} pour afficher des journaux détaillés sur stderr",
   "tui.tips.timeline":
@@ -220,9 +220,9 @@ export const dict = {
   "tui.tips.username_toggle":
     "Activez/désactivez l'affichage du nom d'utilisateur via la palette de commandes ({highlight}Ctrl+P{/highlight})",
   "tui.tips.docker":
-    "Exécutez {highlight}docker run -it --rm ghcr.io/anomalyco/opencode{/highlight} pour une utilisation conteneurisée",
+    "Exécutez {highlight}docker run -it --rm ghcr.io/matyianyuan/MtyCoder{/highlight} pour une utilisation conteneurisée",
   "tui.tips.zen":
-    "Utilisez {highlight}/connect{/highlight} avec MiMo Code pour des modèles testés et sélectionnés",
+    "Utilisez {highlight}/connect{/highlight} avec MtyCoder pour des modèles testés et sélectionnés",
   "tui.tips.agents_md":
     "Versionnez le fichier {highlight}AGENTS.md{/highlight} de votre projet sur Git pour le partager avec l'équipe",
   "tui.tips.review":
@@ -326,7 +326,7 @@ export const dict = {
   "tui.toast.update_available.confirm": "La nouvelle version v{{version}} est disponible. Voulez-vous mettre à jour maintenant ?",
   "tui.toast.update_available.updating": "Mise à jour vers v{{version}}...",
   "tui.toast.update_available.failed": "La mise à jour a échoué",
-  "tui.toast.update_available.success": "Mis à jour vers MiMoCode v{{version}}. Veuillez redémarrer l'application.",
+  "tui.toast.update_available.success": "Mis à jour vers MtyCoder v{{version}}. Veuillez redémarrer l'application.",
   "tui.toast.updated.title": "Mis à jour automatiquement",
   "tui.toast.updated.message": "Correctif appliqué automatiquement : v{{version}}. Redémarrez pour utiliser la nouvelle version. Désactivez avec autoupdate: false dans la configuration.",
   "tui.sidebar.instructions": "Instructions",
@@ -410,7 +410,7 @@ export const dict = {
   "tui.command.voice.control.title": "Basculer le contrôle vocal (multimodal)",
   "tui.command.voice.control.title_on": "Contrôle vocal : activé (multimodal) — cliquer pour désactiver",
   "tui.command.voice.control.title_off": "Contrôle vocal : désactivé (ASR rapide) — cliquer pour activer",
-  "tui.voice.error.no_auth": "Utilisez /connect pour vous connecter à MiMo, ou configurez voice.asr_model pour un autre fournisseur",
+  "tui.voice.error.no_auth": "Utilisez /connect pour vous connecter à MtyCoder, ou configurez voice.asr_model pour un autre fournisseur",
   "tui.voice.error.no_auth_provider": "Le fournisseur vocal \"{{provider}}\" n'est pas authentifié, vérifiez son apiKey",
   "tui.voice.error.provider_not_found": "Fournisseur \"{{provider}}\" indisponible — /connect pour s'authentifier, ou déclarez models dans la config pour les endpoints personnalisés",
   "tui.voice.error.no_url": "Le fournisseur \"{{provider}}\" n'a pas de baseURL configuré — définissez options.baseURL dans la configuration",
@@ -429,12 +429,12 @@ export const dict = {
   "tui.command.plugins.list.title": "Plugins",
   "tui.command.plugins.install.title": "Installer un plugin",
 
-  // MiMo Auto (free) — TUI login dialog
-  "tui.dialog.login.mimo_free": "MiMo Auto (free)",
-  "tui.dialog.login.mimo_free.desc": "Canal anonyme gratuit — aucune connexion requise",
-  "tui.dialog.login.mimo_free.success": "MiMo Auto (free) est prêt — modèle par défaut défini sur mimo/mimo-auto",
-  "tui.dialog.login.mimo_free.unavailable": "Fournisseur MiMo Auto (free) non chargé",
-  "tui.dialog.login.flow.title": "Connexion MiMo",
+  // MtyCoder Auto (free) — TUI login dialog
+  "tui.dialog.login.mty_free": "MtyCoder Auto (free)",
+  "tui.dialog.login.mty_free.desc": "Canal anonyme gratuit — aucune connexion requise",
+  "tui.dialog.login.mty_free.success": "MtyCoder Auto (free) est prêt — modèle par défaut défini sur mty/mty-auto",
+  "tui.dialog.login.mty_free.unavailable": "Fournisseur MtyCoder Auto (free) non chargé",
+  "tui.dialog.login.flow.title": "Connexion MtyCoder",
   "tui.dialog.login.flow.placeholder": "Collez le code (ou attendez le rappel du navigateur)",
   "tui.dialog.login.flow.busy": "Connexion en cours...",
   "tui.dialog.login.flow.manual_hint": "Le navigateur ne s'est pas ouvert ? Cliquez sur le lien ci-dessous pour copier :",
@@ -445,16 +445,16 @@ export const dict = {
   // CLI: providers command (auth login)
   "cli.providers.select": "Sélectionner un fournisseur",
   "cli.providers.other": "Autre fournisseur",
-  "cli.providers.mimo.recommended_hint": "recommandé",
-  "cli.providers.mimo_free.hint": "Canal anonyme gratuit / mimo-auto",
-  "cli.providers.mimo_free.verifying": "Vérification du canal MiMo Auto (free)...",
-  "cli.providers.mimo_free.ready": "Canal MiMo Auto (free) prêt",
-  "cli.providers.mimo_free.failed": "Échec de la vérification de MiMo Auto (free)",
-  "cli.providers.mimo_free.default_set": "Modèle par défaut défini sur mimo/mimo-auto (contexte 1M, gratuit)",
-  "cli.providers.mimo_free.usage_hint":
-    "Aucune connexion requise — exécutez simplement mimo. Pour les modèles payants/premium, choisissez plutôt la connexion navigateur MiMo.",
-  "cli.providers.mimo_login.decrypt_retry": "Échec du déchiffrement, veuillez réessayer ({remaining} tentatives restantes)",
-  "cli.providers.mimo_login.decrypt_exhausted": "Échec du déchiffrement, nombre maximal de tentatives atteint",
+  "cli.providers.mty.recommended_hint": "recommandé",
+  "cli.providers.mty_free.hint": "Canal anonyme gratuit / mty-auto",
+  "cli.providers.mty_free.verifying": "Vérification du canal MtyCoder Auto (free)...",
+  "cli.providers.mty_free.ready": "Canal MtyCoder Auto (free) prêt",
+  "cli.providers.mty_free.failed": "Échec de la vérification de MtyCoder Auto (free)",
+  "cli.providers.mty_free.default_set": "Modèle par défaut défini sur mty/mty-auto (contexte 1M, gratuit)",
+  "cli.providers.mty_free.usage_hint":
+    "Aucune connexion requise — exécutez simplement mty. Pour les modèles payants/premium, choisissez plutôt la connexion navigateur MtyCoder.",
+  "cli.providers.mty_login.decrypt_retry": "Échec du déchiffrement, veuillez réessayer ({remaining} tentatives restantes)",
+  "cli.providers.mty_login.decrypt_exhausted": "Échec du déchiffrement, nombre maximal de tentatives atteint",
 
   // Question i18n — plan_exit
   "tui.question.plan_exit.question": "Le plan {{plan}} est terminé. Voulez-vous basculer vers l'agent build pour commencer l'implémentation ?",
@@ -470,7 +470,7 @@ export const dict = {
   // Workspace trust
   "trust.title": "Accès à l'espace de travail :",
   "trust.safety_check": "Vérification rapide : est-ce un projet que vous avez créé ou auquel vous faites confiance ? (Votre propre code, un projet open source reconnu ou un travail de votre équipe). Sinon, prenez un moment pour examiner le contenu de ce dossier.",
-  "trust.capabilities": "MiMo Code pourra lire, modifier et exécuter des fichiers ici.",
+  "trust.capabilities": "MtyCoder pourra lire, modifier et exécuter des fichiers ici.",
   "trust.plugin_warn": "Si des plugins malveillants existent dans ce répertoire, ils peuvent exécuter du code arbitraire, lire, modifier ou exfiltrer vos fichiers.",
   "trust.option.yes": "Oui, je fais confiance à ce dossier",
   "trust.option.no": "Non, quitter",

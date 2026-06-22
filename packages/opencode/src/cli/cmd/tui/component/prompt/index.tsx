@@ -27,7 +27,7 @@ import * as Editor from "@tui/util/editor"
 import * as Voice from "@tui/util/voice"
 import { useExit } from "../../context/exit"
 import * as Clipboard from "../../util/clipboard"
-import type { AssistantMessage, FilePart, UserMessage } from "@mimo-ai/sdk/v2"
+import type { AssistantMessage, FilePart, UserMessage } from "@mty-coder/sdk/v2"
 import { TuiEvent } from "../../event"
 import { iife } from "@/util/iife"
 import { Locale } from "@/util"
@@ -363,12 +363,15 @@ export function Prompt(props: PromptProps) {
   const hasRightContent = createMemo(() => Boolean(props.right))
 
   function promptModelWarning() {
+    const hasProviders = sync.data.provider_next.connected.length > 0
     toast.show({
       variant: "warning",
-      message: "Connect a provider to send prompts",
-      duration: 3000,
+      message: hasProviders
+        ? "No model selected. Run /model to choose one."
+        : "No provider connected. Opening setup... (or run /connect)",
+      duration: 4000,
     })
-    if (sync.data.provider.length === 0) {
+    if (!hasProviders) {
       dialog.replace(() => <DialogProviderConnect />)
     }
   }

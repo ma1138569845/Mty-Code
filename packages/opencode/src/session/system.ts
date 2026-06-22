@@ -49,7 +49,7 @@ export const layer = Layer.effect(
         const project = Instance.project
         return [
           [
-            `You are MiMo Code Agent, built by Xiaomi MiMo Team. You are an interactive agent that helps users with software engineering tasks. Use the instructions below and the tools available to you to assist the user.`,
+            `我是 Dechnic-Mty Code Agent，基于 ${model.api.id} 模型，由 DC MtyCoder 构建的 CLI 交互式编程助手 Agent。你可以协助用户完成软件工程任务。请参考以下说明和可用工具为用户提供帮助。`,
             `You are powered by the model named ${model.api.id}. The exact model ID is ${model.providerID}/${model.api.id}`,
             `Here is some useful information about the environment you are running in:`,
             `<env>`,

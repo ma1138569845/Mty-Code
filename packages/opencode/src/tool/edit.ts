@@ -18,7 +18,7 @@ import { Instance } from "../project/instance"
 import { SessionCwd } from "./session-cwd"
 import { Snapshot } from "@/snapshot"
 import { assertWriteAllowed, askEditUnlessMemory } from "./external-directory"
-import { AppFileSystem } from "@mimo-ai/shared/filesystem"
+import { AppFileSystem } from "@mty-coder/shared/filesystem"
 
 function normalizeLineEndings(text: string): string {
   return text.replaceAll("\r\n", "\n")
@@ -169,6 +169,23 @@ export const EditTool = Tool.define(
           const normalizedFilePath = AppFileSystem.normalizePath(filePath)
           const block = LSP.Diagnostic.report(filePath, diagnostics[normalizedFilePath] ?? [])
           if (block) output += `\n\nLSP errors detected in this file, please fix:\n${block}`
+
+          // Auto-verify: check if the newString appears in the file after edit
+          if (params.oldString !== "" && params.newString !== "") {
+            const verifyContent = yield* afs.readFileString(filePath)
+            const verifyNew = convertToLineEnding(normalizeLineEndings(params.newString), detectLineEnding(verifyContent))
+            if (!verifyContent.includes(verifyNew)) {
+              // Edit may have been modified by formatter - check if oldString is gone
+              const verifyOld = convertToLineEnding(normalizeLineEndings(params.oldString), detectLineEnding(verifyContent))
+              if (verifyContent.includes(verifyOld)) {
+                output += "\n\n⚠ Edit verification failed: oldString still present in file. The edit may not have been applied correctly."
+              } else {
+                output += "\n\n✓ Edit verified: oldString replaced (content modified by formatter)."
+              }
+            } else {
+              output += "\n\n✓ Edit verified: newString found in file."
+            }
+          }
 
           return {
             metadata: {

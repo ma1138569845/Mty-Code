@@ -1,7 +1,8 @@
-import { createMemo, createSignal, For, onCleanup } from "solid-js"
+import { createMemo, createSignal, For, onCleanup, Show } from "solid-js"
 import { DEFAULT_THEMES, useTheme } from "@tui/context/theme"
 import { useLanguage } from "@tui/context/language"
 import { useLocal } from "@tui/context/local"
+import { useSync } from "@tui/context/sync"
 
 const themeCount = Object.keys(DEFAULT_THEMES).length
 const TIP_ROTATION_MS = 10_000
@@ -10,14 +11,17 @@ const TIP_ROTATION_MS = 10_000
 // Promote recently-added or critical features so users discover them.
 // Tips not listed here use the default weight of 1.
 const PRIORITY_WEIGHTS: Record<string, number> = {
-  "tui.tips.free_models": 50,
-  "tui.tips.background": 50,
-  "tui.tips.login": 40,
-  "tui.tips.theme_mode": 40,
-  "tui.tips.tab_agent": 40,
-  "tui.tips.doc": 30,
-  "tui.tips.models": 30,
-  "tui.tips.connect": 30,
+  "tui.tips.free_models": 100,
+  "tui.tips.connect": 100,
+  "tui.tips.login": 90,
+  "tui.tips.background": 30,
+  "tui.tips.theme_mode": 30,
+  "tui.tips.tab_agent": 30,
+  "tui.tips.doc": 20,
+  "tui.tips.models": 50,
+  "tui.tips.init": 60,
+  "tui.tips.command_palette": 40,
+  "tui.tips.help": 50,
 }
 
 const TIP_KEYS = [
@@ -167,6 +171,7 @@ export function Tips() {
   const theme = useTheme().theme
   const lang = useLanguage()
   const local = useLocal()
+  const sync = useSync()
   const platformSuspendKey = process.platform === "win32" ? "tui.tips.suspend.win" : "tui.tips.suspend.unix"
   const allKeys = [...TIP_KEYS, platformSuspendKey] as readonly string[]
   const [key, setKey] = createSignal(pickWeighted(allKeys))
@@ -178,16 +183,33 @@ export function Tips() {
     return agent ? local.agent.color(agent.name) : theme.warning
   })
 
+  // 检测是否已连接 provider
+  const notConnected = createMemo(() => sync.ready && sync.data.provider_next.connected.length === 0)
+
   return (
-    <box flexDirection="row" maxWidth="100%">
-      <text flexShrink={0} style={{ fg: labelColor() }}>
-        ● {lang.t("tui.tips.label")}{" "}
-      </text>
-      <text flexShrink={1}>
-        <For each={parts()}>
-          {(part) => <span style={{ fg: part.highlight ? theme.text : theme.textMuted }}>{part.text}</span>}
-        </For>
-      </text>
+    <box flexDirection="column" maxWidth="100%">
+      <Show when={notConnected()}>
+        <box flexDirection="row" maxWidth="100%" paddingBottom={1}>
+          <text flexShrink={0} style={{ fg: theme.warning }}>
+            ● {"Welcome! "}
+          </text>
+          <text flexShrink={1}>
+            <span style={{ fg: theme.text }}>Type </span>
+            <span style={{ fg: theme.primary }}>/connect</span>
+            <span style={{ fg: theme.text }}> to set up an AI provider, or just start typing to use the free default model.</span>
+          </text>
+        </box>
+      </Show>
+      <box flexDirection="row" maxWidth="100%">
+        <text flexShrink={0} style={{ fg: labelColor() }}>
+          ● {lang.t("tui.tips.label")}{" "}
+        </text>
+        <text flexShrink={1}>
+          <For each={parts()}>
+            {(part) => <span style={{ fg: part.highlight ? theme.text : theme.textMuted }}>{part.text}</span>}
+          </For>
+        </text>
+      </box>
     </box>
   )
 }
